@@ -360,6 +360,6 @@ export const MANUAL_SECTIONS = [
 ];
 
 /* ---------- 設定 ---------- */
-export const SETTINGS_PROFILE = { name: "大倉 一郎", email: "s.takanaka@example.com", dept: "GG 1課", role: "リーダー" };
+export const SETTINGS_PROFILE = { name: "大倉 一郎", email: "okura@example.com", dept: "GG 1課", role: "リーダー" };
 export const SETTINGS_CHATWORK = { roomId: "312345678", accountId: "1234567", reportTargets: [{ id: "cw1", roomId: "312345678", accountId: "7654321", label: "GG 1課 タスク報告" }, { id: "cw2", roomId: "398765432", accountId: "", label: "日報" }] };
 export const SETTINGS_SHEETS = [{ id: "sh1", project: "A社 記事LP", url: "https://docs.google.com/spreadsheets/d/1Abc…/edit" }, { id: "sh2", project: "C社 美容D2C", url: "https://docs.google.com/spreadsheets/d/1Def…/edit" }];
