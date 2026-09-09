@@ -1,0 +1,30 @@
+<!-- @dsCard group="Components" viewport="700x380" subtitle="SubNav（幅 200・進捗・未読ドット / compact 横スクロール）" name="SubNav" -->
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../styles.css">
+<script type="importmap">{"imports":{"react":"../../assets/react-shim.js"}}</script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<script src="../../assets/lucide-react-shim.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+<script type="text/babel" data-type="module" src="./SubNav.jsx"></script>
+<style>body{padding:16px;background:var(--card)}.g{display:grid;grid-template-columns:120px 1fr;gap:16px;align-items:start}.k{font-size:12px;color:var(--muted-foreground)}</style>
+</head><body><div id="root"></div>
+<script type="text/babel" data-type="module">
+import { ready } from "../../assets/dvb-ready.js";
+const { SubNav } = await ready(["SubNav"]);
+const GROUPS = [
+  { items: [{ key: "home", label: "ホーム", icon: "House" }] },
+  { label: "進める", items: [{ key: "schedule", label: "スケジュール", icon: "CalendarDays", progress: "3/8" }, { key: "learning", label: "学習リスト", icon: "BookOpen", progress: "12/30" }, { key: "checklist", label: "チェックリスト", icon: "ListChecks", progress: "18/24" }, { key: "quiz", label: "理解度チェック", icon: "CircleHelp" }] },
+  { label: "記録する", items: [{ key: "values", label: "バリュー振り返り", icon: "Heart", dot: "info" }, { key: "cr", label: "CRアウトプット", icon: "Image", dot: "info" }] },
+  { label: "調べる", items: [{ key: "glossary", label: "用語集", icon: "BookMarked" }, { key: "qa", label: "Q&A", icon: "MessageSquare", dot: "warning" }] },
+];
+function Demo({ compact, width }) { const [k, setK] = React.useState("learning"); return <SubNav compact={compact} groups={GROUPS} activeKey={k} onSelect={setK} style={{ width }} />; }
+const App = () => (
+  <div className="g">
+    <span className="k">幅 200</span><Demo />
+    <span className="k">compact（幅 420）</span><Demo compact width={420} />
+  </div>
+);
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script></body></html>

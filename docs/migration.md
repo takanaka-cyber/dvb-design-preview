@@ -86,5 +86,14 @@
 - ナビ: `NAV_TO_SCREEN` に goal → evaluation / hit / knowledge / analytics / shoot / links / manual を追記（`Sidebar` のグループ定義は変えない）。
 
 ### 7.3 バッチ 3: 研修（全面再設計・`SubNav`）/ ログイン・登録（`AuthCard`）/ アセクリ（サイドバーなしレイアウト）
+（`ui_kits/dvb/TrainingScreens.jsx` `TrainingScreens2.jsx` `AuthScreens.jsx` `AssigneeScreens.jsx`）
+- 追加部品を先に入れる: `SubNav`（`components/navigation`）/ `AuthCard`（`components/layout`）。
+- 研修 `/onboarding/*`（位置ルールの対象外）: 9 タブ横並びを捨て、サイドバー 248 ｜ `SubNav` 200 ｜ 本文 `max-w-4xl` に。`/onboarding` のトップは Q&A ではなく**ホーム**（Progress カード 3 → 次にやること → 上長 FB / 最近の Q&A）。`/onboarding/lectures` と `/assignments` は「学習リスト」1 画面の 2 種別（`Badge` 講義 / 課題）に統合し、SubNav ではどちらも「学習リスト」を指す。1024 未満・スマホは `SubNav compact`（横スクロール Tabs）。
+- 研修の部品: スケジュール = 縦タイムライン（完了 `--positive` / 今ここ `--primary` 枠 + Badge / 未来 muted）。学習リスト = `SegmentedControl` 4 切替 + 検索、行 56 に `Checkbox`（読了）+ 資料 / 動画 secondary + まとめ ghost、展開で `Textarea` + `SaveStatus` + 保存 primary、上長 FB は `--info-subtle` 枠。チェックリスト = `Progress` + `Switch`、行 44、全完了で `--positive-subtle` 帯。理解度チェック = iframe を Card（高さ 720、border のみ）、ホームとスケジュール Step からも到達。バリュー振り返り = アコーディオン（1 つずつ開く）、`SegmentedControl` ラウンド、`SaveStatus` は PageHeader 右。CR アウトプット = インライン展開フォーム → `Dialog md`、9:16 カードグリッド 4 列（1280 は 3 列）、hover で ✏️🗑、拡大 Dialog 内に FB `Textarea` + `SaveStatus`。用語集 = KPI 式カード（mono 13px `--muted`）+ `DataTable`（sticky ヘッダ）。Q&A = 本文全高の `ChatPanel` + 左 240 に「過去の質問」常設（**閉じても消えない**、日付グループ、未回答は `--warning` ドット）、回答に出典ボックス + ［役に立った / 立たなかった］ghost。スマホは履歴をヘッダ右の History icon → ドロワー、入力 16px。
+- ナビ表示名: 一般側「研修」、管理側「研修生の進捗」（担当者確認）。`NAV_TO_SCREEN` に training → training-home を追記。
+- ログイン `/login`: `AuthCard`（幅 448、AXIS は Geist 700 黒）。入力 44 / 16px（キットでは `BigInput`。実装時は `Input` に `size="lg"` を足す）。エラーは `--negative-subtle` 帯。スマホは左右 16px。
+- 登録申請 `/register`: 同カード。区切り「チャットワーク設定」、ルーム ID / アカウント ID の 2 列はスマホで 1 列。「追加」はラベル右 ghost、2 件以上で行右 🗑。`text-[10px]` 4 箇所 → 13px。送信失敗時に `DraftRestoreBanner`。成功画面は `AuthCard icon="CircleCheck"`。
+- アセクリ `/assignee`・`/assignee/[id]`: サイドバーなし（ヘッダ「AXIS」テキストのみ、`ExternalShell`）。背景 `--background`（グラデ廃止）。一覧の Badge は status（未納品 `--warning` / 納品済 `--positive` / タスクなし muted）、アクセス拒否は `AuthCard icon="Lock"`。詳細: 「納品する」primary（**スマホは入力欄の下・全幅**、PC は右端・縦中央）、CR / PM / 戻す = secondary / secondary / ghost（同位置・同順）、「URLを更新」primary、絵文字📦 → `Package`。alert 5・confirm 1 → Toast / ConfirmDialog。`userScalable=false` は外す。
+- キットの仮置き（実装時に本体へ）: `PageHeader backLink`（ghost「戻る」を h1 の上に置いた）、`Input size="lg"`（44 / 16px）、`Badge kind="status"` の 未納品 / 納品済 / タスクなし。
 
 ### 7.4 バッチ 4: 管理 13 画面（型 A〜D の 4 見本 + 差分）

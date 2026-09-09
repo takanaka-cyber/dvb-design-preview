@@ -363,3 +363,169 @@ export const MANUAL_SECTIONS = [
 export const SETTINGS_PROFILE = { name: "大倉 一郎", email: "okura@example.com", dept: "GG 1課", role: "リーダー" };
 export const SETTINGS_CHATWORK = { roomId: "312345678", accountId: "1234567", reportTargets: [{ id: "cw1", roomId: "312345678", accountId: "7654321", label: "GG 1課 タスク報告" }, { id: "cw2", roomId: "398765432", accountId: "", label: "日報" }] };
 export const SETTINGS_SHEETS = [{ id: "sh1", project: "A社 記事LP", url: "https://docs.google.com/spreadsheets/d/1Abc…/edit" }, { id: "sh2", project: "C社 美容D2C", url: "https://docs.google.com/spreadsheets/d/1Def…/edit" }];
+
+/* ====================== バッチ 3（2026-09-10 追記）: 研修 / ログイン・登録 / アセクリ ====================== */
+/** ナビ → 画面（追記。研修はホームへ） */
+Object.assign(NAV_TO_SCREEN, { training: "training-home" });
+
+/* ---------- 研修（研修生・上長の個人名は置かない） ---------- */
+export const TRAINEE = { label: "研修生A", start: "2026-09-01", startLabel: "9/1（月）", day: 7, mentor: "上長" };
+/** SubNav のグループ（§3.3.1）。progress / dot は画面側で埋める */
+export const TRAINING_NAV = [
+  { items: [{ key: "training-home", label: "ホーム", icon: "House" }] },
+  { label: "進める", items: [
+    { key: "training-schedule", label: "スケジュール", icon: "CalendarDays" },
+    { key: "training-learning", label: "学習リスト", icon: "BookOpen" },
+    { key: "training-checklist", label: "チェックリスト", icon: "ListChecks" },
+    { key: "training-quiz", label: "理解度チェック", icon: "CircleHelp" },
+  ] },
+  { label: "記録する", items: [
+    { key: "training-values", label: "バリュー振り返り", icon: "Heart" },
+    { key: "training-cr", label: "CRアウトプット", icon: "Image" },
+  ] },
+  { label: "調べる", items: [
+    { key: "training-glossary", label: "用語集", icon: "BookMarked" },
+    { key: "training-qa", label: "Q&A", icon: "MessageSquare" },
+  ] },
+];
+/** スケジュール（Day 1〜）。status: done / current / future。links = 学習リスト・理解度チェックへの導線 */
+export const TRAINING_STEPS = [
+  { id: "s1", day: 1, date: "9/1（月）", title: "AXIS と GG の業務を知る", minutes: 90, status: "done", lectures: 2, assignments: 0, note: "マニュアル §1〜§2 を読む。ダッシュボードと日報の使い方" },
+  { id: "s2", day: 2, date: "9/2（火）", title: "広告運用の基本用語", minutes: 120, status: "done", lectures: 3, assignments: 1, note: "CPA / mCPA / ROAS の計算式。用語集 KPI で確認" },
+  { id: "s3", day: 3, date: "9/3（水）", title: "Meta 広告マネージャの構造", minutes: 150, status: "done", lectures: 3, assignments: 1, note: "CPN → 広告セット → 広告。命名規則" },
+  { id: "s4", day: 5, date: "9/5（金）", title: "記事 LP の構成と検証の考え方", minutes: 120, status: "current", lectures: 3, assignments: 1, quiz: true, note: "型B / 型C の違い。検証ナレッジ DB の読み方。終わったら理解度チェック", external: { label: "検証ナレッジ DB を開く" } },
+  { id: "s5", day: 8, date: "9/8（月）", title: "CR 制作の流れとアセクリ発注", minutes: 90, status: "future", lectures: 2, assignments: 1, note: "タスク管理からの発注送信。CR アウトプット 150 件の始め方" },
+  { id: "s6", day: 10, date: "9/10（水）", title: "TikTok 運用の基礎", minutes: 120, status: "future", lectures: 3, assignments: 0, note: "縦型 CR、入札の開始値" },
+  { id: "s7", day: 12, date: "9/12（金）", title: "週次レポートの読み方・書き方", minutes: 90, status: "future", lectures: 2, assignments: 1, note: "KPI 4 → 月間目標 → 振り返り 3 欄" },
+  { id: "s8", day: 15, date: "9/15（月）", title: "バリュー振り返り ラウンド 1", minutes: 60, status: "future", lectures: 0, assignments: 0, note: "5 バリューの自己評価。上長との 1on1" },
+];
+/** 学習リスト（講義 + 課題）。kind: lecture / assignment。read = 読了、summary = まとめ、fb = 上長 FB */
+export const TRAINING_ITEMS = [
+  { id: "l1", category: "基礎", kind: "lecture", title: "AXIS の全体像と毎日の流れ", minutes: 30, read: true, hasDoc: true, hasVideo: true, summary: "日報・タスク・週次レポートが 1 か所に。朝はダッシュボード、18 時までに日報。", fb: { by: "上長", at: "9/2 10:15", text: "要点が押さえられています。日報は「事実」と「改善点」を分けて書く癖をつけましょう。" } },
+  { id: "l2", category: "基礎", kind: "lecture", title: "広告用語 CPA / mCPA / ROAS", minutes: 40, read: true, hasDoc: true, hasVideo: true, summary: "CPA = 広告費 ÷ CV。mCPA は中間 CV。ROAS = 売上 ÷ 広告費 × 100。", fb: null },
+  { id: "a1", category: "基礎", kind: "assignment", title: "課題: 用語集 KPI の式を自分の言葉で説明する", minutes: 30, read: true, hasDoc: true, hasVideo: false, summary: "", fb: null },
+  { id: "l3", category: "Meta 広告", kind: "lecture", title: "CPN / 広告セット / 広告 の構造", minutes: 45, read: true, hasDoc: true, hasVideo: true, summary: "CPN で目的・予算、広告セットで配信先、広告で CR。", fb: { by: "上長", at: "9/4 18:30", text: "OK。次は命名規則（TM2-2_担当_案件_訴求）も一緒に覚えてください。" } },
+  { id: "l4", category: "Meta 広告", kind: "lecture", title: "命名規則と計測タグの確認", minutes: 30, read: true, hasDoc: true, hasVideo: false, summary: "", fb: null },
+  { id: "a2", category: "Meta 広告", kind: "assignment", title: "課題: A社 記事LP の CPN 構造を図にする", minutes: 60, read: false, hasDoc: true, hasVideo: false, summary: "", fb: null },
+  { id: "l5", category: "記事 LP・検証", kind: "lecture", title: "型B と 型C の違い", minutes: 40, read: true, hasDoc: true, hasVideo: true, summary: "型B は悩み提示から、型C は結果提示から。CR と LP の見出し順を揃える。", fb: null },
+  { id: "l6", category: "記事 LP・検証", kind: "lecture", title: "検証ナレッジ DB の読み方", minutes: 30, read: false, hasDoc: true, hasVideo: true, summary: "", fb: null },
+  { id: "l7", category: "記事 LP・検証", kind: "lecture", title: "検証の設計（仮説 → 結果）", minutes: 45, read: false, hasDoc: true, hasVideo: false, summary: "", fb: null },
+  { id: "a3", category: "記事 LP・検証", kind: "assignment", title: "課題: 直近の検証 1 件を仮説・結果で要約する", minutes: 60, read: false, hasDoc: true, hasVideo: false, summary: "", fb: null },
+  { id: "l8", category: "CR 制作", kind: "lecture", title: "CR 制作の流れとアセクリ発注", minutes: 40, read: false, hasDoc: true, hasVideo: true, summary: "", fb: null },
+  { id: "l9", category: "CR 制作", kind: "lecture", title: "CR アウトプット 150 件の進め方", minutes: 20, read: false, hasDoc: true, hasVideo: false, summary: "", fb: null },
+  { id: "a4", category: "CR 制作", kind: "assignment", title: "課題: 9:16 静止画 CR を 3 案つくる", minutes: 120, read: false, hasDoc: true, hasVideo: false, summary: "", fb: null },
+];
+export const TRAINING_ITEM_TOTAL = 30;
+/** チェックリスト（カテゴリ別）。link = 関連画面 */
+export const TRAINING_CHECKLIST = [
+  { category: "アカウント", items: [{ id: "c1", label: "AXIS にログインし、設定でチャットワーク ID を登録", done: true, link: "settings" }, { id: "c2", label: "Meta 広告マネージャの閲覧権限をもらう", done: true }, { id: "c3", label: "TikTok Ads Manager の閲覧権限をもらう", done: true }, { id: "c4", label: "Google 広告の閲覧権限をもらう", done: false }, { id: "c5", label: "CR 素材ドライブに招待される", done: true, link: "links" }] },
+  { category: "毎日の業務", items: [{ id: "c6", label: "日報を 3 日連続で 18:00 までに送信", done: true, link: "mbo" }, { id: "c7", label: "ダッシュボードで今日のタスクを確認する習慣", done: true, link: "dashboard" }, { id: "c8", label: "タスク管理で 1 行入力して保存", done: true, link: "tasks" }, { id: "c9", label: "アセクリに発注送信を 1 回", done: false, link: "tasks" }] },
+  { category: "数値を読む", items: [{ id: "c10", label: "週次レポートの KPI 4 つを説明できる", done: true, link: "weekly" }, { id: "c11", label: "案件別まとめで担当案件の粗利を確認", done: true, link: "project" }, { id: "c12", label: "先週比較ボードで増減の大きい案件を 1 つ挙げる", done: false, link: "board-v2" }, { id: "c13", label: "検証ナレッジ DB で 1 件読む", done: false, link: "knowledge" }] },
+  { category: "研修", items: [{ id: "c14", label: "講義「AXIS の全体像」を読了", done: true }, { id: "c15", label: "課題「KPI の式を説明」を提出", done: true }, { id: "c16", label: "講義「CPN / 広告セット / 広告」を読了", done: true }, { id: "c17", label: "理解度チェック（基礎）を受ける", done: false }, { id: "c18", label: "バリュー振り返り ラウンド 1 を記入", done: false }, { id: "c19", label: "CR アウトプットを 10 件登録", done: true }] },
+  { category: "コミュニケーション", items: [{ id: "c20", label: "GG 1課 のチャットワークに自己紹介", done: true }, { id: "c21", label: "上長との 1on1 を 1 回", done: true }, { id: "c22", label: "Q&A で 1 回質問する", done: true }, { id: "c23", label: "撮影に 1 回同行", done: false }, { id: "c24", label: "ヒット施策を 1 件読む", done: true }] },
+];
+/** バリュー 5 つ（ラウンド 1〜3）。self = 自己評価、fb = 上長 FB */
+export const TRAINING_VALUE_ROUNDS = ["ラウンド 1", "ラウンド 2", "ラウンド 3"];
+export const TRAINING_VALUES = [
+  { id: "v1", name: "事実で話す", desc: "感想より数値と事実。日報も報告も「行ったこと（事実）」から", self: "B", note: "日報の 1 行目を数値から書くようにした。まだ「〜と思う」が混じる。", fb: { by: "上長", at: "9/8 19:10", text: "日報の書き方は良くなっています。報告のときも「CPA が ¥400 上がった」から始めましょう。" } },
+  { id: "v2", name: "先に切り分ける", desc: "問題は媒体か LP か、まず分ける。全部を一度に触らない", self: "C", note: "D社の要因分解を横で見た。自分では未実施。", fb: null },
+  { id: "v3", name: "小さく速く検証する", desc: "1 回の検証は 1 変数。結果が出たら次へ", self: "", note: "", fb: null },
+  { id: "v4", name: "共有して勝ちパターンにする", desc: "うまくいった施策はヒット施策・検証ナレッジに残す", self: "B", note: "ヒット施策を 2 件読んで、自分の言葉でまとめた。", fb: { by: "上長", at: "9/5 12:00", text: "読むだけでなく、次は自分の検証を 1 件登録してみましょう。" } },
+  { id: "v5", name: "期限を守る", desc: "18:00 の日報、金曜の週次コメント。遅れるなら先に言う", self: "A", note: "日報は毎日 18:00 前に送信できている。", fb: null },
+];
+/** CR アウトプット（9:16 サムネ。150 件 / 30 日目標） */
+export const CR_TARGET = { done: 40, total: 150, days: 30, deadline: "10/1（水）" };
+export const CR_OUTPUTS = Array.from({ length: 12 }, (_, i) => {
+  const projects = ["A社 記事LP", "C社 美容D2C", "B社 通販", "D社 サプリ"];
+  const appeals = ["結果提示", "悩み提示", "比較", "権威", "限定", "手順"];
+  return { id: `cr${i + 1}`, no: 40 - i, project: projects[i % 4], appeal: appeals[i % 6], type: i % 3 === 0 ? "動画 15s" : "静止画", date: `9/${9 - Math.floor(i / 2)}`, memo: i % 4 === 0 ? "型C の冒頭を参考に。数値は仮" : "", fb: i === 1 ? { by: "上長", at: "9/9 11:40", text: "訴求は良い。文字量を半分にして、数値を大きく。" } : null, tone: i % 5 };
+});
+/** 用語集: KPI（式カード）/ 業界用語 / 社内用語 */
+export const GLOSSARY_KPI = [
+  { id: "g1", term: "CPA", formula: "広告費 ÷ CV", desc: "最終 CV 1 件あたりの広告費。低いほど良い" },
+  { id: "g2", term: "mCPA", formula: "広告費 ÷ mCV", desc: "中間 CV（記事 LP → 商品 LP の遷移など）1 件あたりの広告費" },
+  { id: "g3", term: "ROAS", formula: "売上 ÷ 広告費 × 100", desc: "広告費に対する売上の割合（%）。100% で費用と売上が同額" },
+  { id: "g4", term: "CTR", formula: "クリック ÷ インプレッション × 100", desc: "表示に対するクリック率（%）" },
+  { id: "g5", term: "CVR", formula: "CV ÷ クリック × 100", desc: "クリックに対する CV 率（%）" },
+  { id: "g6", term: "CPC", formula: "広告費 ÷ クリック", desc: "1 クリックあたりの広告費" },
+  { id: "g7", term: "CPM", formula: "広告費 ÷ インプレッション × 1,000", desc: "1,000 表示あたりの広告費" },
+  { id: "g8", term: "粗利", formula: "売上 − 広告費", desc: "案件の利益。週次レポート・案件別まとめの主指標" },
+];
+export const GLOSSARY_INDUSTRY = [
+  { id: "i1", term: "CPN（キャンペーン）", desc: "広告アカウント内の最上位。目的と予算を持つ。配下に広告セット → 広告" },
+  { id: "i2", term: "広告セット", desc: "配信先（ターゲット・配置・入札）の単位。1 セットに CR を詰めすぎると学習が割れる" },
+  { id: "i3", term: "記事 LP", desc: "商品 LP の前に置く記事型のページ。悩み → 解決 → 商品の順で読ませる" },
+  { id: "i4", term: "型B / 型C", desc: "CR の構成型。型B = 悩み提示から、型C = 結果提示から始める" },
+  { id: "i5", term: "リタゲ（リターゲティング）", desc: "一度サイトに来た人に再配信すること" },
+  { id: "i6", term: "類似（Lookalike）", desc: "CV した人に似た属性の人へ配信する設定。1% が最も近い" },
+  { id: "i7", term: "学習期間", desc: "広告セット作成・変更後、配信が安定するまでの期間。頻繫な変更でリセットされる" },
+  { id: "i8", term: "検索語句レポート", desc: "Google 広告で実際に検索された語句の一覧。CV 0 の語句を除外する" },
+];
+export const GLOSSARY_INTERNAL = [
+  { id: "n1", term: "AXIS", desc: "この社内ツール。デイリー業務一元管理システム" },
+  { id: "n2", term: "AXAD", desc: "媒体の数値を集計する社内基盤。毎朝 6:00 に AXIS へ同期" },
+  { id: "n3", term: "アセクリ", desc: "外部の制作パートナー。タスク管理から発注送信、納品はアセクリ画面で受ける" },
+  { id: "n4", term: "GG", desc: "この事業部の略称。1課・2課" },
+  { id: "n5", term: "日報（MBO）", desc: "毎日 18:00 までに送る 2 欄の報告。行ったこと（事実）と改善点" },
+  { id: "n6", term: "コミットメント", desc: "月ごとに自分で決める行動目標。毎日 / 週次 / 月次" },
+  { id: "n7", term: "ヒット施策", desc: "うまくいった施策の共有。記入依頼 → 記入 → 承認" },
+  { id: "n8", term: "CR アウトプット", desc: "研修生が 30 日で 150 件つくる CR 案。9:16 のサムネで登録" },
+  { id: "n9", term: "共有 CP", desc: "担当者をまたいで使うキャンペーン（ブランド KW など）" },
+];
+/** Q&A 履歴（日付グループ）と会話 */
+export const QA_HISTORY = [
+  { date: "今日 9/9", items: [{ id: "q5", q: "型B と 型C はどう使い分ける？", unanswered: true }, { id: "q4", q: "mCPA が高いときは何を見る？" }] },
+  { date: "9/8（月）", items: [{ id: "q3", q: "発注送信はどこから？" }] },
+  { date: "9/4（木）", items: [{ id: "q2", q: "CPA と mCPA の違いは？" }, { id: "q1", q: "日報の「事実」と「改善点」の書き分け" }] },
+];
+export const QA_THREADS = {
+  q5: [{ id: 1, role: "user", text: "型B と 型C はどう使い分ける？", at: "15:52" }],
+  q4: [
+    { id: 1, role: "user", text: "mCPA が高いときは何を見る？", at: "11:20" },
+    { id: 2, role: "ai", text: "mCPA は記事 LP から商品 LP への遷移 1 件あたりの広告費です。高いときは 2 段階で見ます。\n1. CTR が低い → CR と記事 LP の見出しがずれていないか（型B / 型C の順序）\n2. CTR は普通で遷移率が低い → 記事 LP の導入文と 1 スクロール目。表より基準の提示を先に\nまず A社 記事LP の検証ナレッジ「型C 検証」を読むと具体例があります。", sources: ["マニュアル §5 用語", "検証ナレッジ k1", "用語集 KPI"], at: "11:20" },
+  ],
+  q3: [
+    { id: 1, role: "user", text: "発注送信はどこから？", at: "9/8 14:02" },
+    { id: 2, role: "ai", text: "タスク管理 → 今週タスクの行を展開 → 発注メモを書いて［発注送信］です。アセクリのチャットワークに定型文で送られます。送信前に期限日とアセクリの選択を確認してください。", sources: ["マニュアル §3.2 発注送信"], at: "9/8 14:02" },
+  ],
+  q2: [
+    { id: 1, role: "user", text: "CPA と mCPA の違いは？", at: "9/4 10:05" },
+    { id: 2, role: "ai", text: "CPA は最終 CV 1 件あたりの広告費、mCPA は中間 CV（記事 LP の遷移など）1 件あたりの広告費です。記事 LP 案件では mCPA → CPA の両方を見ます。", sources: ["マニュアル §5 用語", "用語集 KPI"], at: "9/4 10:05" },
+  ],
+  q1: [
+    { id: 1, role: "user", text: "日報の「事実」と「改善点」の書き分け", at: "9/4 09:40" },
+    { id: 2, role: "ai", text: "「行ったこと（事実）」は数値と行動だけ（例: AI系記事 15 件の売上を更新し累計 ¥11,897,525）。「改善点」は明日変える行動を 1 つ（例: LP 側の切り分けを先にやる）。感想は書かなくて大丈夫です。", sources: ["マニュアル §2 毎日の流れ"], at: "9/4 09:40" },
+  ],
+};
+export const QA_TEMPLATES = ["用語の意味", "画面の場所", "数値の見方"];
+/** 上長からのフィードバック（ホーム。未読 3 件） */
+export const TRAINING_FEEDBACK = [
+  { id: "f1", screen: "training-cr", label: "CRアウトプット #39", text: "訴求は良い。文字量を半分にして、数値を大きく。", at: "9/9 11:40", unread: true },
+  { id: "f2", screen: "training-values", label: "バリュー振り返り「事実で話す」", text: "日報の書き方は良くなっています。報告のときも数値から。", at: "9/8 19:10", unread: true },
+  { id: "f3", screen: "training-learning", label: "学習リスト「CPN / 広告セット / 広告」", text: "OK。次は命名規則も一緒に覚えてください。", at: "9/4 18:30", unread: true },
+];
+
+/* ---------- ログイン・登録 ---------- */
+export const REGISTER_DEFAULT = { name: "", email: "", password: "", roomId: "", accountId: "", reportRoomId: "", reportAccountIds: [""] };
+
+/* ---------- アセクリ（外部。個人名なし） ---------- */
+export const ASSIGNEE_LIST = [
+  { id: "as1", name: "制作A社", tier: "Tier 1", undelivered: 3, delivered: 12, status: "undelivered" },
+  { id: "as2", name: "制作B社", tier: "Tier 1", undelivered: 0, delivered: 8, status: "delivered" },
+  { id: "as3", name: "制作C社", tier: "Tier 2", undelivered: 2, delivered: 5, status: "undelivered" },
+  { id: "as4", name: "制作D社", tier: "Tier 2", undelivered: 0, delivered: 0, status: "none" },
+];
+/** アセクリ詳細（制作A社）。未納品は URL 入力を持つ */
+export const ASSIGNEE_UNDELIVERED = [
+  { id: "u1", project: "A社 記事LP", type: "CR", title: "夏季CPN_v3", detail: "型B → 型C 差し替え 3 本", due: "9/10（水）", overdue: false, crUrls: ["https://drive.google.com/file/d/1AbC…/view", ""], pmUrl: "", sheetUrl: "https://docs.google.com/spreadsheets/d/1Abc…/edit" },
+  { id: "u2", project: "C社 美容D2C", type: "バナー", title: "リタゲ", detail: "静止画 4 枚", due: "9/12（金）", overdue: false, crUrls: [""], pmUrl: "", sheetUrl: "" },
+  { id: "u3", project: "D社 サプリ", type: "LP", title: "商品LP", detail: "遷移率改善 FV 差し替え", due: "9/5（金）", overdue: true, crUrls: [""], pmUrl: "", sheetUrl: "" },
+];
+export const ASSIGNEE_DELIVERED = [
+  { group: "今日の納品", items: [{ id: "d1", project: "A社 記事LP", type: "LP", title: "記事LP", detail: "見出し AB 追加", deliveredAt: "9/9 10:12", crUrl: "https://drive.google.com/file/d/…", pmUrl: "https://drive.google.com/…" }] },
+  { group: "9/1（月）〜 9/7（日）", items: [
+    { id: "d2", project: "E社 保険比較", type: "CR", title: "検証CP", detail: "訴求 3 案", deliveredAt: "9/5 17:40", crUrl: "https://drive.google.com/file/d/…", pmUrl: "" },
+    { id: "d3", project: "A社 記事LP", type: "CR", title: "夏季CPN_v2", detail: "型B 2 本", deliveredAt: "9/2 15:05", crUrl: "https://drive.google.com/file/d/…", pmUrl: "https://drive.google.com/…" },
+  ] },
+  { group: "8/25（月）〜 8/31（日）", items: [{ id: "d4", project: "B社 通販", type: "バナー", title: "秋物", detail: "季節バナー 3 枚", deliveredAt: "8/28 11:30", crUrl: "https://drive.google.com/file/d/…", pmUrl: "" }] },
+];
