@@ -1,4 +1,4 @@
-<!-- @dsCard group="Components" viewport="700x720" subtitle="KpiCard / MetricCell / DataTable / TaskRow" name="Data" -->
+<!-- @dsCard group="Components" viewport="700x800" subtitle="KpiCard / MetricCell / DataTable / TaskRow / FreshnessBadge" name="Data" -->
 <!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">
 <link rel="stylesheet" href="../../styles.css">
 <script type="importmap">{"imports":{"react":"../../assets/react-shim.js"}}</script>
@@ -12,12 +12,14 @@
 <script type="text/babel" data-type="module" src="./MetricCell.jsx"></script>
 <script type="text/babel" data-type="module" src="./DataTable.jsx"></script>
 <script type="text/babel" data-type="module" src="./TaskRow.jsx"></script>
+<script type="text/babel" data-type="module" src="../core/Button.jsx"></script>
+<script type="text/babel" data-type="module" src="./FreshnessBadge.jsx"></script>
 <script type="text/babel" data-type="module" src="../layout/EmptyState.jsx"></script>
 <style>body{padding:16px;background:var(--card)}.g{display:grid;grid-template-columns:120px 1fr;gap:12px 16px;align-items:center}.k{font-size:12px;color:var(--muted-foreground)}.r{display:flex;gap:8px;align-items:center;flex-wrap:wrap}</style>
 </head><body><div id="root"></div>
 <script type="text/babel" data-type="module">
 import { ready } from "../../assets/dvb-ready.js";
-const { KpiCard, MetricCell, DataTable, TaskRow, EmptyState } = await ready(["KpiCard","MetricCell","DataTable","TaskRow","EmptyState"]);
+const { KpiCard, MetricCell, DataTable, TaskRow, EmptyState, FreshnessBadge, FreshnessNotice } = await ready(["KpiCard","MetricCell","DataTable","TaskRow","EmptyState","FreshnessBadge","FreshnessNotice","Button"]);
 const cols = [
   { key:"name", label:"案件名", sticky:true, width:160, render:r=><a href="#" style={{color:"var(--primary)",fontWeight:500}}>{r.name}</a> },
   { key:"profit", label:"今週粗利", align:"right", sortable:true, render:r=><MetricCell value={r.profit} delta={r.dp} unit="¥"/> },
@@ -46,6 +48,7 @@ const App = () => (
       <DataTable columns={cols.slice(0,3)} rows={[]} error="AXAD の集計に接続できません" onRetry={()=>{}}/>
       <DataTable columns={cols.slice(0,3)} rows={[]} emptyNode={<EmptyState compact icon="Table2" title="この週の案件データはまだありません。" description="対象週を変えるか、AXAD の同期をお待ちください。"/>}/>
     </div>
+    <span className="k">FreshnessBadge</span><div style={{display:"grid",gap:8}}><div className="r" style={{gap:24}}><FreshnessBadge state="fresh" time="9/9 08:12"/><FreshnessBadge state="stale" time="9/7 18:40"/><FreshnessBadge state="none"/></div><FreshnessNotice onRefresh={()=>{}}/></div>
     <span className="k">TaskRow</span><div style={{display:"grid",gap:2,border:"1px solid var(--border)",borderRadius:"var(--radius)",padding:4,background:"var(--card)"}}>
       <TaskRow text="A社 記事LP の CR 差し替え（型B → 型C）" assignee="白井" due="9/10" media="FB"/>
       <TaskRow text="B社 TikTok 新規 CPN の入札調整" assignee="井上" due="9/5" overdue media="TikTok"/>

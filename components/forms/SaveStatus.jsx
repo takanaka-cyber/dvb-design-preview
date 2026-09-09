@@ -1,6 +1,6 @@
 import React from "react";
 
-/** 自動保存の状態表示。画面右上1箇所に置く。state: idle | saving | saved | error */
+/** 自動保存の状態表示。PageHeader の右端に固定（入力欄ごとの「保存中…」は出さない）。state: idle | saving | saved | error */
 export function SaveStatus({ state = "idle", time, onRetry, style }) {
   const L = typeof window !== "undefined" ? window.LucideReact : null;
   const base = { display: "inline-flex", alignItems: "center", gap: 6, height: 28, fontSize: 13, lineHeight: "18px", whiteSpace: "nowrap", fontVariantNumeric: "tabular-nums", ...style };
@@ -16,7 +16,7 @@ export function SaveStatus({ state = "idle", time, onRetry, style }) {
   const I = L && L.CircleAlert;
   return (
     <span role="alert" style={{ ...base, color: "var(--negative)" }}>
-      {I ? <I size={14} strokeWidth={2} /> : null}保存に失敗
+      {I ? <I size={14} strokeWidth={2} /> : null}保存に失敗しました。入力内容はブラウザに退避済みです
       <button type="button" onClick={onRetry} style={{ height: 24, padding: "0 8px", marginLeft: 2, border: "1px solid var(--border)", borderRadius: "var(--radius-sm)", background: "var(--card)", color: "var(--foreground)", fontSize: 12, fontWeight: 500, cursor: "pointer" }}>再試行</button>
     </span>
   );

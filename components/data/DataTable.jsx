@@ -5,8 +5,9 @@ import React, { useState } from "react";
  * columns: [{ key, label, align, sortable, width, sticky, render(row) }]
  * state: loading（スケルトン行）/ error（1行メッセージ）/ 空は emptyNode を表示。
  * 行の展開: expandedKeys（rowKey の配列）に入っている行の直下に renderExpanded(row) を全列幅で描く。
+ * 行の選択: onRowClick / selectedKey（履歴一覧など。選択行は --primary-subtle）。
  */
-export function DataTable({ columns = [], rows = [], rowKey = "id", sortKey, sortDir = "desc", onSort, density = "standard", stickyHeader = true, maxHeight, loading, error, emptyNode, onRetry, minWidth, caption, expandedKeys = [], renderExpanded, style }) {
+export function DataTable({ columns = [], rows = [], rowKey = "id", sortKey, sortDir = "desc", onSort, density = "standard", stickyHeader = true, maxHeight, loading, skeletonRows = 5, error, emptyNode, onRetry, minWidth, caption, onRowClick, selectedKey, expandedKeys = [], renderExpanded, style }) {
   const [hoverRow, setHoverRow] = useState(null);
   const compact = density === "compact";
   const py = compact ? 8 : 12, px = compact ? 8 : 12;
@@ -36,12 +37,12 @@ export function DataTable({ columns = [], rows = [], rowKey = "id", sortKey, sor
     );
   };
 
-  const cellStyle = (c, r, hovered) => ({
+  const cellStyle = (c, r, hovered, selected) => ({
     padding: `${py}px ${px}px`, height: rowH, fontSize: 13, lineHeight: "18px", verticalAlign: "middle",
     textAlign: c.align === "right" ? "right" : "left", whiteSpace: c.wrap ? "normal" : "nowrap",
     fontVariantNumeric: c.align === "right" ? "tabular-nums" : undefined,
     position: c.sticky ? "sticky" : undefined, left: c.sticky ? 0 : undefined, zIndex: c.sticky ? 1 : undefined,
-    background: hovered ? "var(--accent)" : "var(--card)", boxShadow: c.sticky ? "1px 0 0 var(--border)" : undefined,
+    background: selected ? "var(--primary-subtle)" : hovered ? "var(--accent)" : "var(--card)", boxShadow: c.sticky ? "1px 0 0 var(--border)" : undefined,
     borderBottom: "1px solid var(--border)", color: "var(--foreground)", width: c.width, minWidth: c.width,
   });
 
@@ -51,7 +52,7 @@ export function DataTable({ columns = [], rows = [], rowKey = "id", sortKey, sor
         {caption ? <caption style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0 0 0 0)" }}>{caption}</caption> : null}
         <thead><tr>{columns.map(th)}</tr></thead>
         <tbody>
-          {loading ? Array.from({ length: 5 }).map((_, i) => (
+          {loading ? Array.from({ length: skeletonRows }).map((_, i) => (
             <tr key={"sk" + i} aria-busy="true">{columns.map((c, j) => (
               <td key={c.key} style={cellStyle(c, null, false)}><span style={{ display: "inline-block", width: j === 0 ? "70%" : "55%", height: 12, borderRadius: 4, background: "var(--muted)" }} /></td>
             ))}</tr>
@@ -66,11 +67,12 @@ export function DataTable({ columns = [], rows = [], rowKey = "id", sortKey, sor
           ) : rows.map((r, i) => {
             const k = r[rowKey] ?? i;
             const hovered = hoverRow === k;
+            const selected = selectedKey != null && selectedKey === k;
             const expanded = renderExpanded && expandedKeys.includes(k);
             return (
               <React.Fragment key={k}>
-                <tr onMouseEnter={() => setHoverRow(k)} onMouseLeave={() => setHoverRow(null)}>
-                  {columns.map((c) => <td key={c.key} style={{ ...cellStyle(c, r, hovered), borderBottom: expanded ? 0 : "1px solid var(--border)" }}>{c.render ? c.render(r) : r[c.key]}</td>)}
+                <tr onMouseEnter={() => setHoverRow(k)} onMouseLeave={() => setHoverRow(null)} onClick={onRowClick ? () => onRowClick(r) : undefined} aria-selected={selected || undefined} style={{ cursor: onRowClick ? "pointer" : undefined }}>
+                  {columns.map((c) => <td key={c.key} style={{ ...cellStyle(c, r, hovered, selected), borderBottom: expanded ? 0 : "1px solid var(--border)" }}>{c.render ? c.render(r) : r[c.key]}</td>)}
                 </tr>
                 {expanded ? (
                   <tr>
