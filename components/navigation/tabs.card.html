@@ -1,0 +1,26 @@
+<!-- @dsCard group="Components" viewport="700x300" subtitle="Tabs（下線型 / 件数付き / アイコン付き / 横スクロール）" name="Tabs" -->
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../styles.css">
+<script type="importmap">{"imports":{"react":"../../assets/react-shim.js"}}</script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<script src="../../assets/lucide-react-shim.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+<script type="text/babel" data-type="module" src="./Tabs.jsx"></script>
+<style>body{padding:16px;background:var(--card)}.g{display:grid;grid-template-columns:140px 1fr;gap:16px;align-items:center}.k{font-size:12px;color:var(--muted-foreground)}</style>
+</head><body><div id="root"></div>
+<script type="text/babel" data-type="module">
+import { ready } from "../../assets/dvb-ready.js";
+const { Tabs } = await ready(["Tabs"]);
+function Demo({ items, width }) { const [v, setV] = React.useState(typeof items[0] === "string" ? items[0] : items[0].value); return <Tabs items={items} value={v} onChange={setV} aria-label="タブ" style={{ width }} />; }
+const App = () => (
+  <div className="g">
+    <span className="k">四半期（評価シート）</span><Demo items={["Q1", "Q2", "Q3", "Q4"]} />
+    <span className="k">件数付き（部署）</span><Demo items={[{ value: "a", label: "GG 1課", count: 3 }, { value: "b", label: "GG 2課", count: 2 }, { value: "c", label: "承認待ち", count: 1 }]} />
+    <span className="k">アイコン付き</span><Demo items={[{ value: "list", label: "一覧", icon: "List" }, { value: "assign", label: "評価者割当", icon: "UserCheck" }, { value: "off", label: "無効", icon: "Ban", disabled: true }]} />
+    <span className="k">横スクロール（幅 360）</span><Demo width={360} items={["ホーム", "スケジュール", "学習リスト", "チェックリスト", "理解度チェック", "バリュー振り返り", "CRアウトプット"]} />
+  </div>
+);
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script></body></html>

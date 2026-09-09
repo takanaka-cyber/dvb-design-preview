@@ -72,8 +72,18 @@
 - コミットメント: 月送りは同じ位置・帯なし（`WeekSelector compact` に月配列。実装時は `unit="month"` を足して「前月/次月」ラベルにする）。バッジ = 達成 `--positive` / 遅れ・連続未達 `--negative`。進捗 → `Progress`（type 別 3 色グラデ廃止）。「保存」×2 は secondary、Textarea 右横のまま。チーム 3 列は `repeat(3, minmax(0,1fr))`、1280 でも折れない。
 - キット内で仮置きした既存部品の拡張（実装時に本体へ）: `Badge` の `status` / `tier` / `role` kind、`PageHeader` の `backLink`（キットでは ghost Button を h1 の上に置いた）、`DataTable` の行内インライン編集の見本（バッチ 4 型 A で描く）。
 
-### 7.2 バッチ 2: 週次・ツール（目標 / ヒット施策 / 検証ナレッジ / 先週比較のタスク節 / 分析 / 撮影 / リンク集 / マニュアル / 設定）
-- 追加部品: `Tabs` / `ChatPanel` / `LinkTile`。CP判断は描かない（休眠）。
+### 7.2 バッチ 2: 週次・ツール（`ui_kits/dvb/EvaluationScreen.jsx` `HitMeasuresScreen.jsx` `KnowledgeScreen.jsx` `BoardV2Screen.jsx` `AnalyticsScreen.jsx` `ShootingScheduleScreen.jsx` `LinksScreen.jsx` `ManualScreen.jsx` `SettingsScreen.jsx`）
+- 追加部品を先に入れる: `Tabs`（`components/navigation`）/ `ChatPanel`（`components/layout`）/ `LinkTile`（`components/data`）。CP判断は描かない（休眠）。
+- 目標 `/evaluation`: Q1〜Q4 の生 button → `Tabs`（年度送りは同じ行の右）。評価サマリー・等級表 → `DataTable`。アクションバーは同じ位置・同じ順で 提出 = primary / 再提出・差し戻し = secondary / 確定 = primary（purple 廃止）/ DRAFT に戻す = ghost（`--negative` 文字）。confirm 2 → `ConfirmDialog`。自動保存の `text-[10px]` → PageHeader 右の `SaveStatus`。「-」は「未入力」。スマホ 393 は閲覧のみ（アクションバー・サマリー・等級表は非表示）。
+- ヒット施策 `/hit-measures`: カード 4 色 → 白 + `SectionHeading` + 件数 `Badge`（`--warning` / `--info` / `--warning` / `--positive`）。依頼ボタンは secondary 全幅。記入・承認は §2 `Dialog`（承認 Dialog は左 却下 destructive / 右 承認 primary）。取り消し・削除は destructive、confirm 2 → `ConfirmDialog`。記入 Dialog 内に `DraftRestoreBanner`。
+- 検証ナレッジ `/reports/knowledge`: フィルタ 1 行 → `FilterBar`（13px）。左 4px は `--media-*-foreground`。表 3 つ → `DataTable compact`（indigo thead・`bg-yellow-100` 廃止）。**合計行はキットでは `selectedKey` で強調 → 実装時は DataTable に `footerRow`（`--muted` 背景）を足す。** 空 = `EmptyState` + ［条件をリセット］。
+- 先週比較 `/reports/projects/comparison`: v1 `BoardScreen` の下に「タスクの追加・完了管理」（`ProjectTaskSection`）。追加行右端「追加」、フィルタ Select 3、表は第 1 列 `Checkbox`・最終列 🗑 → `ConfirmDialog`。`thead bg-blue-900` 廃止。
+- 分析 `/analytics`: 入力・テンプレ・レポートを `ChatPanel` に載せる（ヘッダにテンプレグループチップ + テンプレカード 3 列 = secondary Button 高さ 72、下端に入力 = 「レポートを修正する」）。レポート表は `.analytics-report` で thead `--muted` / 13px / tabular-nums。過去レポートの削除に `ConfirmDialog`。
+- 撮影 `/shooting-schedule`: 月/週/日 → `SegmentedControl`、凡例 → `Badge`（撮影 = info / 締切 = warning）。罫線は `--border`、今日は `--primary-subtle`。予定モーダルは §2 `Dialog`。**フッタの左 2 ボタン（削除 + Google カレンダー）は Dialog の `destructive` 1 枠に収まらないため、キットでは `hideFooter` + 同型フッタ → 実装時は Dialog に `secondaryAction`（左の補助ボタン）を足す。** alert 5・confirm 1 → Toast / ConfirmDialog。
+- リンク集 `/links`: h1 を標準に（E1）。カテゴリ色 6 種 → `SectionHeading` のみ、タイル → `LinkTile`（編集モードで ✏️👁🗑）。⑤⑥ は白 + border、⑥ のボタン順は キャンセル → 保存。マイリンク削除に `ConfirmDialog`。ヒント帯は `--info-subtle` 13px。
+- マニュアル `/manual`: TOC アクティブ = `--primary-subtle` + 左 2px。h1 下線 2px `--primary`、h2 `--border`、h3 左線 `--border`。blockquote `--info-subtle`、code `--muted`。lg 未満は PageHeader 右「目次」→ `Dialog`（キットでは状態「目次 Dialog」で再現）。
+- 設定 `/settings`: 成功バナー廃止 → Toast、エラーは帯（`--negative-subtle`）。Label 13px。sticky バーは白 + 上 border + shadow、ボタン primary。`DraftRestoreBanner` を PageHeader 直下に。CardTitle → `SectionHeading`。
+- ナビ: `NAV_TO_SCREEN` に goal → evaluation / hit / knowledge / analytics / shoot / links / manual を追記（`Sidebar` のグループ定義は変えない）。
 
 ### 7.3 バッチ 3: 研修（全面再設計・`SubNav`）/ ログイン・登録（`AuthCard`）/ アセクリ（サイドバーなしレイアウト）
 

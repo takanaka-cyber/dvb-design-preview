@@ -1,0 +1,31 @@
+<!-- @dsCard group="Components" viewport="700x600" subtitle="ChatPanel（テンプレチップ / 出典 / ストリーミング中 / 操作ボタン）" name="ChatPanel" -->
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../styles.css">
+<script type="importmap">{"imports":{"react":"../../assets/react-shim.js"}}</script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<script src="../../assets/lucide-react-shim.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+<script type="text/babel" data-type="module" src="../core/Button.jsx"></script>
+<script type="text/babel" data-type="module" src="./ChatPanel.jsx"></script>
+<style>body{padding:16px;background:var(--muted)}</style>
+</head><body><div id="root"></div>
+<script type="text/babel" data-type="module">
+import { ready } from "../../assets/dvb-ready.js";
+const { ChatPanel, Button } = await ready(["ChatPanel","Button"]);
+const ghost = (l) => <Button size="sm" variant="ghost">{l}</Button>;
+function App() {
+  const [v, setV] = React.useState("");
+  const [tpl, setTpl] = React.useState("今週の利益増減の要因");
+  const [msgs, setMsgs] = React.useState([
+    { id: 1, role: "user", text: "CPA と mCPA の違いは？", at: "15:52" },
+    { id: 2, role: "ai", text: "CPA は最終 CV 1 件あたりの広告費、mCPA は中間 CV（記事 LP の遷移など）1 件あたりの広告費です。記事 LP 案件では mCPA → CPA の両方を見ます。", sources: ["マニュアル §5 用語", "用語集 KPI"], at: "15:52", actions: <>{ghost("役に立った")}{ghost("立たなかった")}</> },
+    { id: 3, role: "user", text: "D社の CPA が上がった原因を媒体別に教えて", at: "15:56" },
+    { id: 4, role: "ai", text: "先週比で Google の CPA が ¥3,120 → ¥4,080 に上がっています。FB は横ばい", streaming: true },
+  ]);
+  const send = (t) => { setMsgs((m) => [...m, { id: Date.now(), role: "user", text: t, at: "15:57" }]); setV(""); };
+  return <ChatPanel height={560} messages={msgs} value={v} onChange={setV} onSend={send} templates={["今週の利益増減の要因", "案件別の CPA 推移", "メンバー別まとめ"]} activeTemplate={tpl} onTemplate={(t) => { setTpl(t); setV(t + "を教えて"); }} />;
+}
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script></body></html>

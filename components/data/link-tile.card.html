@@ -1,0 +1,26 @@
+<!-- @dsCard group="Components" viewport="700x280" subtitle="LinkTile（通常 / hover / 編集モード / 非表示）" name="LinkTile" -->
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../styles.css">
+<script type="importmap">{"imports":{"react":"../../assets/react-shim.js"}}</script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<script src="../../assets/lucide-react-shim.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+<script type="text/babel" data-type="module" src="../layout/SectionHeading.jsx"></script>
+<script type="text/babel" data-type="module" src="./LinkTile.jsx"></script>
+<style>body{padding:16px;background:var(--background)}.g{display:grid;gap:16px}.k{font-size:12px;color:var(--muted-foreground);margin-bottom:6px}.r{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}</style>
+</head><body><div id="root"></div>
+<script type="text/babel" data-type="module">
+import { ready } from "../../assets/dvb-ready.js";
+const { LinkTile, SectionHeading } = await ready(["LinkTile","SectionHeading"]);
+const App = () => (
+  <div className="g">
+    <div><div className="k">通常（見出しで区別、色ドットなし）</div><SectionHeading icon="Megaphone" title="広告" count={3} style={{ marginBottom: 8 }} />
+      <div className="r"><LinkTile name="Meta 広告マネージャ" icon="Megaphone" /><LinkTile name="TikTok Ads Manager" icon="Video" /><LinkTile name="Google 広告" icon="Search" /></div></div>
+    <div><div className="k">編集モード（ハンドル + ✏️👁🗑）・3 つ目は非表示</div>
+      <div className="r"><LinkTile editing name="Meta 広告マネージャ" icon="Megaphone" /><LinkTile editing name="TikTok Ads Manager" icon="Video" /><LinkTile editing hidden name="旧 CP 管理シート（非表示）" icon="FileSpreadsheet" /></div></div>
+  </div>
+);
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script></body></html>
