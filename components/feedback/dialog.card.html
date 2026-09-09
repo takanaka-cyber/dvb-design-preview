@@ -1,0 +1,34 @@
+<!-- @dsCard group="Components" viewport="700x760" subtitle="Dialog sm / md（破壊ボタン付き）" name="Dialog" -->
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../styles.css">
+<script type="importmap">{"imports":{"react":"../../assets/react-shim.js"}}</script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<script src="../../assets/lucide-react-shim.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+<script type="text/babel" data-type="module" src="../core/Button.jsx"></script>
+<script type="text/babel" data-type="module" src="../forms/Input.jsx"></script>
+<script type="text/babel" data-type="module" src="../forms/Select.jsx"></script>
+<script type="text/babel" data-type="module" src="../forms/Field.jsx"></script>
+<script type="text/babel" data-type="module" src="./Dialog.jsx"></script>
+<style>body{padding:16px;background:var(--muted)}.c{display:grid;gap:16px;justify-items:start}.k{font-size:12px;color:var(--muted-foreground)}</style>
+</head><body><div id="root"></div>
+<script type="text/babel" data-type="module">
+import { ready } from "../../assets/dvb-ready.js";
+const { Dialog, Field, Input, Select } = await ready(["Dialog","Button","Field","Input","Select"]);
+const App = () => (
+  <div className="c">
+    <span className="k">sm 480 — 1 入力</span>
+    <Dialog inline size="sm" title="カテゴリを追加" confirmLabel="追加"><Field label="カテゴリ名" htmlFor="c"><Input id="c" placeholder="例: 事務" /></Field></Dialog>
+    <span className="k">md 640 — フォーム + 左に破壊ボタン</span>
+    <Dialog inline size="md" title="撮影予定を編集" description="9/10（水）14:00" confirmLabel="更新" destructive={{ label: "削除" }} onConfirm={() => {}}>
+      <div style={{ display: "grid", gap: 12 }}>
+        <Field label="タイトル" htmlFor="t"><Input id="t" defaultValue="C社 縦型 15 秒 撮影" /></Field>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}><Field label="案件" htmlFor="p"><Select id="p" options={["C社 美容D2C", "A社 記事LP"]} defaultValue="C社 美容D2C" style={{ width: "100%" }} /></Field><Field label="種別" htmlFor="k"><Select id="k" options={["撮影", "締切"]} defaultValue="撮影" style={{ width: "100%" }} /></Field></div>
+      </div>
+    </Dialog>
+  </div>
+);
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script></body></html>

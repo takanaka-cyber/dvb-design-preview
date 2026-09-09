@@ -1,0 +1,26 @@
+<!-- @dsCard group="Components" viewport="700x260" subtitle="SegmentedControl（Tabs / SubNav はバッチ 2〜3）" name="Navigation" -->
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../styles.css">
+<script type="importmap">{"imports":{"react":"../../assets/react-shim.js"}}</script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<script src="../../assets/lucide-react-shim.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+<script type="text/babel" data-type="module" src="./SegmentedControl.jsx"></script>
+<style>body{padding:16px;background:var(--card)}.g{display:grid;grid-template-columns:120px 1fr;gap:12px 16px;align-items:center}.k{font-size:12px;color:var(--muted-foreground)}.r{display:flex;gap:8px;align-items:center;flex-wrap:wrap}</style>
+</head><body><div id="root"></div>
+<script type="text/babel" data-type="module">
+import { ready } from "../../assets/dvb-ready.js";
+const { SegmentedControl } = await ready(["SegmentedControl"]);
+function Demo({ options }) { const [v, setV] = React.useState(typeof options[0] === "string" ? options[0] : options[0].value); return <SegmentedControl options={options} value={v} onChange={setV} aria-label="表示" />; }
+const App = () => (
+  <div className="g">
+    <span className="k">2 個</span><div className="r"><Demo options={["月", "週"]} /></div>
+    <span className="k">3 個（並び替え）</span><div className="r"><Demo options={["優先度", "期限", "案件"]} /></div>
+    <span className="k">4 個</span><div className="r"><Demo options={["全て", "ダッシュボード表示のみ", "案件別", "優先度別"]} /></div>
+    <span className="k">アイコン付き 6 個</span><div className="r"><Demo options={[{value:"chat",label:"Q&A",icon:"MessageSquare"},{value:"check",label:"チェックリスト",icon:"ListChecks"},{value:"lec",label:"講義",icon:"BookOpen"},{value:"book",label:"課題",icon:"FileText"},{value:"val",label:"バリュー",icon:"Heart"},{value:"cr",label:"CR",icon:"Image"}]} /></div>
+  </div>
+);
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script></body></html>

@@ -147,4 +147,74 @@ export const NAV_GROUPS = [
   ] },
 ];
 /** キット内で実画面があるナビ項目 → screen キー */
-export const NAV_TO_SCREEN = { board: "board", project: "project", mbo: "mbo", weekly: "weekly", goal: "goal", commit: "commit", dashboard: "dashboard" };
+export const NAV_TO_SCREEN = { board: "board", project: "project", mbo: "mbo", weekly: "weekly", goal: "goal", commit: "commit", dashboard: "dashboard", tasks: "tasks" };
+
+/* ====================== バッチ 1（2026-09-10 追記）: タスク管理 / 課のタスク詳細 / ダッシュボード / コミットメント ====================== */
+export const TODAY_ISO = "2026-09-09";
+/** アセクリ（外部制作パートナー。個人名は置かない） */
+export const ASSIGNEES = ["制作A社", "制作B社", "制作C社", "制作D社"];
+export const TASK_OPTIONS = { target: ["新規", "既存"], type: ["CR", "LP", "記事", "バナー"], priority: ["高", "中", "低"] };
+/** 課の構成（GG 実在 7 名。課分けは仮） */
+export const SECTIONS = [{ name: "GG 1課", members: ["白井", "古木", "大倉", "太一"] }, { name: "GG 2課", members: ["岩崎", "三冨", "高橋"] }];
+
+/** タスク入力（スプレッドシート風。下書き中の行） */
+export const TASK_INPUT_ROWS = [
+  { id: "i1", project: "A社 記事LP", target: "既存", type: "CR", title: "夏季CPN_v4", detail: "型C の勝ちパターン横展開 2 本", priority: "高", assignee: "制作A社", due: "2026-09-16" },
+  { id: "i2", project: "C社 美容D2C", target: "新規", type: "LP", title: "", detail: "", priority: "中", assignee: "", due: "" },
+  { id: "i3", project: "", target: "", type: "", title: "", detail: "", priority: "中", assignee: "", due: "" },
+];
+/** 今週タスク（9/8〜9/14）。owner = GG メンバー、due は ISO */
+export const WEEK_TASKS = [
+  { id: "t1", owner: "白井", project: "A社 記事LP", target: "既存", type: "CR", title: "夏季CPN_v3", detail: "型B → 型C 差し替え 3 本", priority: "高", assignee: "制作A社", due: "2026-09-10", done: false, dashboard: true },
+  { id: "t2", owner: "白井", project: "A社 記事LP", target: "既存", type: "LP", title: "記事LP", detail: "見出し AB 追加", priority: "中", assignee: "制作B社", due: "2026-09-12", done: true, dashboard: true },
+  { id: "t3", owner: "古木", project: "C社 美容D2C", target: "新規", type: "CR", title: "TikTok 新規", detail: "縦型 15 秒 2 本", priority: "高", assignee: "制作C社", due: "2026-09-11", done: false, dashboard: true },
+  { id: "t4", owner: "古木", project: "C社 美容D2C", target: "既存", type: "バナー", title: "リタゲ", detail: "静止画 4 枚", priority: "低", assignee: "制作A社", due: "2026-09-12", done: true, dashboard: false },
+  { id: "t5", owner: "大倉", project: "B社 通販", target: "既存", type: "記事", title: "比較記事", detail: "導入文の改稿", priority: "中", assignee: "制作B社", due: "2026-09-09", done: false, dashboard: true },
+  { id: "t6", owner: "岩崎", project: "D社 サプリ", target: "既存", type: "LP", title: "商品LP", detail: "遷移率改善 FV 差し替え", priority: "高", assignee: "制作D社", due: "2026-09-05", done: false, dashboard: true },
+  { id: "t7", owner: "白井", project: "E社 保険比較", target: "新規", type: "CR", title: "検証CP", detail: "訴求 3 案", priority: "低", assignee: "制作C社", due: "2026-09-14", done: true, dashboard: false },
+  { id: "t8", owner: "岩崎", project: "D社 サプリ", target: "既存", type: "バナー", title: "Google", detail: "レスポンシブ 2 セット", priority: "中", assignee: "制作D社", due: "2026-09-13", done: true, dashboard: true },
+];
+/** 課のタスク（今週タスク + 三冨の 2 件） */
+export const SECTION_TASKS = [
+  ...WEEK_TASKS,
+  { id: "t9", owner: "三冨", project: "F社 紐付けCP", target: "新規", type: "CR", title: "紐付け検証", detail: "訴求軸 2 案の比較", priority: "中", assignee: "制作C社", due: "2026-09-12", done: false, dashboard: true },
+  { id: "t10", owner: "三冨", project: "B社 通販", target: "既存", type: "バナー", title: "秋物", detail: "季節バナー 3 枚", priority: "低", assignee: "制作B社", due: "2026-09-14", done: true, dashboard: false },
+];
+export const OTHER_CATEGORIES = ["事務", "学習", "その他"];
+export const OTHER_TASKS = [
+  { id: "o1", text: "9月度 経費精算", category: "事務", status: "未着手", subtasks: ["領収書の回収"] },
+  { id: "o2", text: "Meta 認定資格の更新", category: "学習", status: "進行中", subtasks: [] },
+];
+/** アセクリ稼働状況: 9/8（月）〜 9/21（日）の納品予定件数（決定的な擬似値） */
+export const LOAD_DAYS = Array.from({ length: 14 }, (_, i) => { const d = 8 + i; const day = d > 30 ? d - 30 : d; const dow = ["日", "月", "火", "水", "木", "金", "土"][d % 7]; return { key: `d${d}`, label: `9/${day}（${dow}）`, weekend: dow === "土" || dow === "日" }; });
+export const ASSIGNEE_LOAD = ASSIGNEES.map((name, i) => ({ id: name, name, ...Object.fromEntries(LOAD_DAYS.map((x, j) => [x.key, x.weekend ? 0 : ((i * 3 + j * 2) % 7)])) }));
+/** 過去のタスク（週アコーディオン） */
+export const PAST_WEEKS = WEEKS.slice(1, 5).map((w, i) => ({ ...w, total: 7 - (i % 2), done: 7 - (i % 2) - (i === 1 ? 1 : 0), tasks: WEEK_TASKS.slice(0, 3).map((t) => ({ ...t, id: `${w.key}-${t.id}`, done: true })) }));
+
+/* ---------- ダッシュボード ---------- */
+export const CAL_WEEK = [8, 9, 10, 11, 12, 13, 14].map((d) => ({ d, dow: ["日", "月", "火", "水", "木", "金", "土"][d % 7] }));
+export const CAL_EVENTS = [
+  { d: 9, label: "B社 比較記事 改稿", kind: "task" }, { d: 10, label: "A社 CR 差し替え 3 本", kind: "task" }, { d: 10, label: "C社 縦型 撮影", kind: "shoot" },
+  { d: 11, label: "C社 TikTok 新規 CR", kind: "task" }, { d: 12, label: "A社 見出し AB", kind: "task" }, { d: 12, label: "週次レポート 締切", kind: "deadline" }, { d: 14, label: "E社 訴求 3 案", kind: "task" },
+];
+export const TEAM_PROGRESS = GG_MEMBERS.map((name) => { const ts = SECTION_TASKS.filter((t) => t.owner === name); return { name, total: ts.length, done: ts.filter((t) => t.done).length }; });
+
+/* ---------- コミットメント ---------- */
+export const COMMIT_MONTHS = [{ key: "2026-09", label: "2026年9月", current: true }, { key: "2026-08", label: "2026年8月" }, { key: "2026-07", label: "2026年7月" }, { key: "2026-06", label: "2026年6月" }];
+/** 自分（大倉）のコミットメント。type 毎日 = ✓ トグル、週次/月次 = −/＋ カウンタ */
+export const MY_COMMITMENTS = [
+  { id: "c1", title: "毎日 18:00 までに日報を送信する", type: "毎日", value: 5, max: 7, doneToday: true, late: false, reason: "", reflection: "" },
+  { id: "c2", title: "週 2 本の新規 CR を配信開始する", type: "週次", value: 1, max: 2, late: true, missStreak: 2, reason: "制作C社の納品が 9/8 → 9/11 にずれた", reflection: "" },
+  { id: "c3", title: "検証 CP の結果を金曜にまとめる", type: "週次", value: 1, max: 1, late: false, reason: "", reflection: "金曜 15 時に枠を固定したら回った" },
+  { id: "c4", title: "D社の主因切り分けを月内に完了する", type: "月次", value: 0, max: 1, late: false, reason: "", reflection: "" },
+];
+export const TEAM_COMMITMENTS = {
+  "事業部A": [
+    { name: "白井", title: "週 2 本の新規 CR を配信開始", value: 2, max: 2, late: false },
+    { name: "古木", title: "TikTok CPN の入札を毎朝確認", value: 2, max: 5, late: true, missStreak: 3 },
+    { name: "三冨", title: "検証 CP の結果を金曜にまとめる", value: 1, max: 1, late: false },
+  ],
+  "事業部B": [
+    { name: "岩崎", title: "D社の切り分けを日次で更新", value: 4, max: 5, late: false },
+  ],
+};

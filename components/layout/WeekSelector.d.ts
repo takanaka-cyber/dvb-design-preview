@@ -8,7 +8,7 @@ export interface WeekSelectorProps {
   /** reason === "more" は「過去の週を見る…」が選ばれたとき */
   onChange?: (index: number, reason?: "more") => void;
   /** ◀ ▶ のみ（スマホ） */
-  compact?: boolean;
+  compact?: boolean; /** "week"(既定) | "month" — 現在バッジの表記（今週/今月） */ unit?: "week" | "month";
   style?: React.CSSProperties;
 }
 export declare function WeekSelector(props: WeekSelectorProps): JSX.Element;

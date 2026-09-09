@@ -1,5 +1,5 @@
-<!-- @dsCard group="DVB" viewport="1440x900" subtitle="9 画面 × 状態 × 幅 1440 / 1280 / 393 / 430" name="DVB リファレンス画面" -->
-<!-- @startingPoint section="DVB" subtitle="サイドバー + ページの業務画面シェル（PC 6 画面 + Wave 2 ラフ 3 枚、スマホ 4 画面）" viewport="1440x900" -->
+<!-- @dsCard group="DVB" viewport="1440x900" subtitle="13 画面 × 状態 × 幅 1440 / 1280 / 393 / 430（毎日 / 週次・ツール / 研修・外部 / 管理）" name="DVB リファレンス画面" -->
+<!-- @startingPoint section="DVB" subtitle="サイドバー + ページの業務画面シェル（PC 10 画面 + ラフ 3 枚、スマホ 4 画面）" viewport="1440x900" -->
 <!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><title>DVB リファレンス画面</title>
 <link rel="stylesheet" href="../../styles.css">
 <script type="importmap">{"imports":{"react":"../../assets/react-shim.js"}}</script>
@@ -31,6 +31,12 @@
 <script type="text/babel" data-type="module" src="../../components/layout/WeekSelector.jsx"></script>
 <script type="text/babel" data-type="module" src="../../components/layout/EmptyState.jsx"></script>
 <script type="text/babel" data-type="module" src="../../components/layout/Sidebar.jsx"></script>
+<!-- バッチ 1 追加部品 -->
+<script type="text/babel" data-type="module" src="../../components/data/Progress.jsx"></script>
+<script type="text/babel" data-type="module" src="../../components/navigation/SegmentedControl.jsx"></script>
+<script type="text/babel" data-type="module" src="../../components/feedback/Dialog.jsx"></script>
+<script type="text/babel" data-type="module" src="../../components/forms/Switch.jsx"></script>
+<script type="text/babel" data-type="module" src="../../components/forms/Checkbox.jsx"></script>
 <script type="text/babel" data-type="module" src="./BoardScreen.jsx"></script>
 <script type="text/babel" data-type="module" src="./ProjectScreen.jsx"></script>
 <script type="text/babel" data-type="module" src="./MboScreen.jsx"></script>
@@ -40,6 +46,10 @@
 <script type="text/babel" data-type="module" src="./MboMonthlyScreen.jsx"></script>
 <script type="text/babel" data-type="module" src="./ProjectMobileScreen.jsx"></script>
 <script type="text/babel" data-type="module" src="./Wave2Screens.jsx"></script>
+<!-- バッチ 1 画面 -->
+<script type="text/babel" data-type="module" src="./TasksScreen.jsx"></script>
+<script type="text/babel" data-type="module" src="./DashboardScreenV2.jsx"></script>
+<script type="text/babel" data-type="module" src="./CommitScreenV2.jsx"></script>
 <style>
   html,body{height:100%} body{background:oklch(0.87 0.01 250);overflow:auto}
   .bar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:8px 16px;flex-wrap:wrap;padding:8px 16px;background:var(--foreground);color:#fff;font-size:12px}
@@ -53,8 +63,8 @@
 <script type="text/babel" data-type="module">
 import { ready } from "../../assets/dvb-ready.js";
 import { NAV_GROUPS, NAV_TO_SCREEN } from "./data.js";
-const D = await ready(["Sidebar","Toast","Button","DataTable","TaskRow","KpiCard","PageHeader","FilterBar","Select","Field","Textarea","SaveStatus","EmptyState","SectionHeading","Badge","ConfirmDialog","MetricCell","Input","WeekSelector","FreshnessBadge","FreshnessNotice","DraftRestoreBanner"]);
-const KIT = ["BoardScreen","ProjectScreen","MboScreen","WeeklyReportScreen","MboMobileScreen","MboHistoryScreen","MboMonthlyScreen","ProjectMobileScreen","GoalScreen","CommitScreen","DashboardScreen"];
+const D = await ready(["Sidebar","Toast","Button","DataTable","TaskRow","KpiCard","PageHeader","FilterBar","Select","Field","Textarea","SaveStatus","EmptyState","SectionHeading","Badge","ConfirmDialog","MetricCell","Input","WeekSelector","FreshnessBadge","FreshnessNotice","DraftRestoreBanner","Progress","SegmentedControl","Dialog","Switch","Checkbox"]);
+const KIT = ["BoardScreen","ProjectScreen","MboScreen","WeeklyReportScreen","MboMobileScreen","MboHistoryScreen","MboMonthlyScreen","ProjectMobileScreen","GoalScreen","CommitScreen","DashboardScreen","TasksScreen","SectionDetailScreen","DashboardScreenV2","CommitScreenV2"];
 await new Promise((r) => { const t = () => (window.DVBKit && KIT.every((k) => window.DVBKit[k])) ? r() : setTimeout(t, 16); t(); });
 const { Sidebar, Toast } = D;
 const K = window.DVBKit;
@@ -63,17 +73,26 @@ const L = window.LucideReact;
 
 const S4 = [["normal","通常"],["empty","空"],["loading","読み込み"],["error","エラー"]];
 const S2 = S4.slice(0, 2);
-/** 画面定義: pc / mobile の部品と、それぞれの状態一覧。nav = サイドバーの現在地キー */
+/** 上部バーの「画面」グループ（§5: 毎日 / 週次・ツール / 研修・外部 / 管理） */
+const GROUPS = [["daily", "毎日"], ["weekly", "週次・ツール"], ["training", "研修・外部"], ["admin", "管理"]];
+/** 画面定義: pc / mobile の部品と、それぞれの状態一覧。nav = サイドバーの現在地キー、group = 上部バーのグループ */
 const SCREENS = [
-  { key: "dashboard", label: "ダッシュボード", wave: 2, nav: "dashboard", pc: K.DashboardScreen, pcStates: [S4[0]] },
-  { key: "board", label: "GG 週次案件ボード", nav: "project", pc: K.BoardScreen, pcStates: S4 },
-  { key: "project", label: "案件別まとめ", nav: "project", pc: K.ProjectScreen, pcStates: S4, mobile: K.ProjectMobileScreen, mobileStates: S2 },
-  { key: "weekly", label: "週次レポート", nav: "weekly", pc: K.WeeklyReportScreen, pcStates: [...S4, ["view","閲覧モード"]], mobile: (p) => <K.WeeklyReportScreen {...p} mobile />, mobileStates: S2 },
-  { key: "mbo", label: "日報", nav: "mbo", pc: K.MboScreen, pcStates: [...S4, ["sent","送信済み"]], mobile: K.MboMobileScreen, mobileStates: [...S2, ["sent","送信済み"], ["night","0〜5時"]] },
-  { key: "mbo-history", label: "日報 履歴", nav: "mbo", pc: K.MboHistoryScreen, pcStates: S4, mobile: (p) => <K.MboHistoryScreen {...p} mobile />, mobileStates: S2 },
-  { key: "mbo-monthly", label: "日報 月別", nav: "mbo", pc: K.MboMonthlyScreen, pcStates: S4 },
-  { key: "goal", label: "目標", wave: 2, nav: "goal", pc: K.GoalScreen, pcStates: [S4[0]] },
-  { key: "commit", label: "コミットメント", wave: 2, nav: "commit", pc: K.CommitScreen, pcStates: [S4[0]] },
+  // 毎日（バッチ 1 で 4 画面追加。旧 Wave 2 ラフの dashboard / commit は *-rough に退避）
+  { key: "dashboard", label: "ダッシュボード", group: "daily", nav: "dashboard", pc: K.DashboardScreenV2, pcStates: S4 },
+  { key: "tasks", label: "タスク管理", group: "daily", nav: "tasks", pc: K.TasksScreen, pcStates: S4 },
+  { key: "tasks-section", label: "課のタスク詳細", group: "daily", nav: "tasks", pc: K.SectionDetailScreen, pcStates: S2 },
+  { key: "mbo", label: "日報", group: "daily", nav: "mbo", pc: K.MboScreen, pcStates: [...S4, ["sent","送信済み"]], mobile: K.MboMobileScreen, mobileStates: [...S2, ["sent","送信済み"], ["night","0〜5時"]] },
+  { key: "mbo-history", label: "日報 履歴", group: "daily", nav: "mbo", pc: K.MboHistoryScreen, pcStates: S4, mobile: (p) => <K.MboHistoryScreen {...p} mobile />, mobileStates: S2 },
+  { key: "mbo-monthly", label: "日報 月別", group: "daily", nav: "mbo", pc: K.MboMonthlyScreen, pcStates: S4 },
+  { key: "commit", label: "コミットメント", group: "daily", nav: "commit", pc: K.CommitScreenV2, pcStates: S4 },
+  { key: "dashboard-rough", label: "ダッシュボード（v1 ラフ）", group: "daily", nav: "dashboard", pc: K.DashboardScreen, pcStates: [S4[0]] },
+  { key: "commit-rough", label: "コミットメント（v1 ラフ）", group: "daily", nav: "commit", pc: K.CommitScreen, pcStates: [S4[0]] },
+  // 週次・ツール（バッチ 2 で追加予定）
+  { key: "weekly", label: "週次レポート", group: "weekly", nav: "weekly", pc: K.WeeklyReportScreen, pcStates: [...S4, ["view","閲覧モード"]], mobile: (p) => <K.WeeklyReportScreen {...p} mobile />, mobileStates: S2 },
+  { key: "project", label: "案件別まとめ", group: "weekly", nav: "project", pc: K.ProjectScreen, pcStates: S4, mobile: K.ProjectMobileScreen, mobileStates: S2 },
+  { key: "board", label: "GG 週次案件ボード", group: "weekly", nav: "project", pc: K.BoardScreen, pcStates: S4 },
+  { key: "goal", label: "目標（v1 ラフ）", group: "weekly", nav: "goal", pc: K.GoalScreen, pcStates: [S4[0]] },
+  // 研修・外部 / 管理 はバッチ 3・4
 ];
 const WIDTHS = [1440, 1280, 393, 430];
 const parse = () => Object.fromEntries(new URLSearchParams(location.hash.slice(1)));
@@ -107,8 +126,10 @@ function App() {
     <>
       <div className="bar" role="toolbar" aria-label="キット操作">
         <span style={{fontWeight:600,fontSize:13}}>DVB リファレンス</span>
-        <span className="lbl">画面</span><div className="grp">{SCREENS.filter((s) => !s.wave).map((s) => <button key={s.key} aria-pressed={screen===s.key} onClick={() => setScreen(s.key)} disabled={mobile && !s.mobile} title={mobile && !s.mobile ? "PC 幅のみ" : undefined}>{s.label}</button>)}</div>
-        <span className="lbl">Wave 2</span><div className="grp">{SCREENS.filter((s) => s.wave).map((s) => <button key={s.key} aria-pressed={screen===s.key} onClick={() => setScreen(s.key)} disabled={mobile}>{s.label}</button>)}</div>
+        {GROUPS.map(([g, gl]) => { const list = SCREENS.filter((s) => s.group === g); return (<React.Fragment key={g}>
+          <span className="lbl">{gl}</span>
+          <div className="grp">{list.length ? list.map((s) => <button key={s.key} aria-pressed={screen===s.key} onClick={() => setScreen(s.key)} disabled={mobile && !s.mobile} title={mobile && !s.mobile ? "PC 幅のみ" : undefined}>{s.label}</button>) : <button disabled title="後のバッチで追加">—</button>}</div>
+        </React.Fragment>); })}
         <span className="lbl">状態</span><div className="grp">{states.map(([k,l]) => <button key={k} aria-pressed={st===k} onClick={() => setState(k)}>{l}</button>)}</div>
         <span className="lbl">幅</span><div className="grp">{WIDTHS.map((w) => <button key={w} aria-pressed={width===w} onClick={() => { setWidth(w); if (w < 600 && !def.mobile) setScreen("mbo"); }}>{w}</button>)}</div>
         {!mobile ? <><span className="lbl">ナビ</span><div className="grp"><button aria-pressed={!collapsed} onClick={() => setCollapsed(false)}>248</button><button aria-pressed={collapsed} onClick={() => setCollapsed(true)}>56</button></div></> : null}
