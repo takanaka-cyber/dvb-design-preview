@@ -17,7 +17,7 @@ export function BoardScreen({ state = "normal", toast, narrow }) {
   const loading = state === "loading", error = state === "error", empty = state === "empty";
 
   const base = empty ? [] : rows;
-  // 「担当」= 現担当者(owner) + 今週タスクを持つ人(tasks[].assignee)。複数担当のマスタ化は米沢さん確認待ちなので導出で表現
+  // 「担当」= 現担当者(owner) + 今週タスクを持つ人(tasks[].assignee)。複数担当のマスタ化は確認待ちなので導出で表現
   const people = (r) => Array.from(new Set([r.owner, ...r.tasks.map((t) => t.assignee)].filter(Boolean)));
   const data = base.filter((r) => !sel.length || people(r).some((n) => sel.includes(n))).sort((a, b) => (sort.d === "desc" ? 1 : -1) * (((b[sort.k] ?? -Infinity)) - ((a[sort.k] ?? -Infinity))));
   const allTasks = data.flatMap((r) => r.tasks);
