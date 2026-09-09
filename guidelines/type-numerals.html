@@ -1,0 +1,8 @@
+<!-- @dsCard group="Type" viewport="700x170" subtitle="tabular-nums。右寄せで桁が揃う" name="Numerals" -->
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><link rel="stylesheet" href="../styles.css">
+<style>body{padding:16px;background:var(--card)}.row{display:flex;gap:8px;flex-wrap:wrap}.sw{flex:1 1 0;min-width:90px}.chip{height:56px;border-radius:var(--radius);border:1px solid var(--border)}.lbl{font-size:12px;color:var(--muted-foreground);margin-top:6px;line-height:1.35}.lbl b{display:block;color:var(--foreground);font-weight:500;font-family:var(--font-mono);font-size:12px}</style></head><body><style>td{padding:4px 12px;text-align:right;font-size:13px;line-height:20px}th{font-size:12px;color:var(--muted-foreground);font-weight:500;text-align:right;padding:4px 12px}.n{font-variant-numeric:tabular-nums}</style>
+<table style="border-collapse:collapse"><tr><th></th><th>proportional（NG）</th><th>tabular-nums（OK）</th><th>増減</th></tr>
+<tr><td class="lbl">粗利</td><td style="font-variant-numeric:proportional-nums">¥1,111,111</td><td class="n">¥1,111,111</td><td class="n" style="color:var(--positive)">▲ +¥120,400</td></tr>
+<tr><td class="lbl">消化</td><td style="font-variant-numeric:proportional-nums">¥8,090,909</td><td class="n">¥8,090,909</td><td class="n" style="color:var(--negative)">▼ −¥38,200</td></tr>
+<tr><td class="lbl">ROAS</td><td style="font-variant-numeric:proportional-nums">311.7%</td><td class="n">311.7%</td><td class="n" style="color:var(--positive)">▲ +12.3pt</td></tr></table>
+<div class="lbl" style="margin-top:8px"><b>font-variant-numeric: tabular-nums</b>マイナスは U+2212「−」、矢印は ▲▼ を併記（色だけで伝えない）</div></body></html>

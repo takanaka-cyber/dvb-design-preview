@@ -1,0 +1,285 @@
+/* =====================================================================
+   DVB globals.css（Tailwind v4 / shadcn 互換）— そのまま app/globals.css に貼る
+   構成:  1) @import  2) :root / .dark に実値  3) @theme inline で Tailwind に公開
+   注意:  :root 側に `--x: var(--y)` のエイリアスを置かない（.dark の上書きを拾わない）。
+          Tailwind への公開は @theme inline に限定する（inline は使用箇所で var() を解決するのでダーク対応）。
+   ===================================================================== */
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --background: oklch(0.984 0.003 248);
+  --foreground: oklch(0.208 0.042 266);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.208 0.042 266);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.208 0.042 266);
+  --muted: oklch(0.968 0.007 248);
+  --muted-foreground: oklch(0.446 0.043 257);
+  --disabled-foreground: oklch(0.704 0.04 257);
+  --border: oklch(0.929 0.013 256);
+  --input: oklch(0.929 0.013 256);
+  --ring: oklch(0.546 0.245 263);
+
+  --primary: oklch(0.546 0.245 263);
+  --primary-foreground: oklch(1 0 0);
+  --primary-hover: oklch(0.488 0.243 264);
+  --primary-subtle: oklch(0.97 0.014 255);
+  --primary-subtle-foreground: oklch(0.424 0.199 266);
+  --secondary: oklch(0.968 0.007 248);
+  --secondary-foreground: oklch(0.208 0.042 266);
+  --accent: oklch(0.968 0.007 248);
+  --accent-foreground: oklch(0.208 0.042 266);
+  --destructive: oklch(0.577 0.245 27);
+  --destructive-foreground: oklch(1 0 0);
+
+  --positive: oklch(0.527 0.154 150);
+  --positive-subtle: oklch(0.982 0.018 156);
+  --positive-subtle-foreground: oklch(0.448 0.119 151);
+  --negative: oklch(0.577 0.245 27);
+  --negative-subtle: oklch(0.971 0.013 17);
+  --negative-subtle-foreground: oklch(0.444 0.177 26);
+  --warning: oklch(0.555 0.163 49);
+  --warning-subtle: oklch(0.987 0.022 95);
+  --warning-subtle-foreground: oklch(0.473 0.137 46);
+  --info: oklch(0.546 0.245 263);
+  --info-subtle: oklch(0.97 0.014 255);
+  --info-subtle-foreground: oklch(0.424 0.199 266);
+
+  --rank-s: oklch(0.488 0.243 264);
+  --rank-s-foreground: oklch(1 0 0);
+  --rank-a: oklch(0.932 0.032 256);
+  --rank-a-foreground: oklch(0.424 0.199 266);
+  --rank-b: oklch(1 0 0);
+  --rank-b-foreground: oklch(0.488 0.243 264);
+  --rank-b-border: oklch(0.809 0.105 252);
+  --rank-c: oklch(1 0 0);
+  --rank-c-foreground: oklch(0.372 0.044 257);
+  --rank-c-border: oklch(0.869 0.022 252);
+  --rank-stop: oklch(0.929 0.013 256);
+  --rank-stop-foreground: oklch(0.446 0.043 257);
+
+  --media-fb: oklch(0.932 0.032 256);
+  --media-fb-foreground: oklch(0.424 0.199 266);
+  --media-tiktok: oklch(0.948 0.028 342);
+  --media-tiktok-foreground: oklch(0.459 0.187 4);
+  --media-google: oklch(0.962 0.044 156);
+  --media-google-foreground: oklch(0.448 0.119 151);
+  --media-other: oklch(0.968 0.007 248);
+  --media-other-foreground: oklch(0.372 0.044 257);
+
+  --chart-1: oklch(0.546 0.245 263);
+  --chart-2: oklch(0.6 0.118 185);
+  --chart-3: oklch(0.769 0.188 70);
+  --chart-4: oklch(0.645 0.246 16);
+  --chart-5: oklch(0.554 0.046 257);
+
+  --sidebar: oklch(1 0 0);
+  --sidebar-foreground: oklch(0.372 0.044 257);
+  --sidebar-primary: oklch(0.546 0.245 263);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.97 0.014 255);
+  --sidebar-accent-foreground: oklch(0.424 0.199 266);
+  --sidebar-border: oklch(0.929 0.013 256);
+  --sidebar-ring: oklch(0.546 0.245 263);
+
+  --radius: 0.5rem;
+}
+
+.dark {
+  --background: oklch(0.13 0.028 262);
+  --foreground: oklch(0.968 0.007 248);
+  --card: oklch(0.208 0.042 266);
+  --card-foreground: oklch(0.968 0.007 248);
+  --popover: oklch(0.208 0.042 266);
+  --popover-foreground: oklch(0.968 0.007 248);
+  --muted: oklch(0.279 0.041 261);
+  --muted-foreground: oklch(0.809 0.024 252);
+  --disabled-foreground: oklch(0.554 0.046 257);
+  --border: oklch(0.372 0.044 257);
+  --input: oklch(0.372 0.044 257);
+  --ring: oklch(0.707 0.165 254);
+
+  --primary: oklch(0.707 0.165 254);
+  --primary-foreground: oklch(0.13 0.028 262);
+  --primary-hover: oklch(0.809 0.105 252);
+  --primary-subtle: oklch(0.282 0.091 267);
+  --primary-subtle-foreground: oklch(0.882 0.059 254);
+  --secondary: oklch(0.279 0.041 261);
+  --secondary-foreground: oklch(0.968 0.007 248);
+  --accent: oklch(0.279 0.041 261);
+  --accent-foreground: oklch(0.968 0.007 248);
+  --destructive: oklch(0.704 0.191 22);
+  --destructive-foreground: oklch(0.13 0.028 262);
+
+  --positive: oklch(0.792 0.209 152);
+  --positive-subtle: oklch(0.266 0.065 152);
+  --positive-subtle-foreground: oklch(0.871 0.15 154);
+  --negative: oklch(0.704 0.191 22);
+  --negative-subtle: oklch(0.258 0.092 26);
+  --negative-subtle-foreground: oklch(0.885 0.062 18);
+  --warning: oklch(0.828 0.189 84);
+  --warning-subtle: oklch(0.279 0.077 46);
+  --warning-subtle-foreground: oklch(0.924 0.12 95);
+  --info: oklch(0.707 0.165 254);
+  --info-subtle: oklch(0.282 0.091 267);
+  --info-subtle-foreground: oklch(0.882 0.059 254);
+
+  --rank-s: oklch(0.707 0.165 254);
+  --rank-s-foreground: oklch(0.13 0.028 262);
+  --rank-a: oklch(0.282 0.091 267);
+  --rank-a-foreground: oklch(0.882 0.059 254);
+  --rank-b: oklch(0.208 0.042 266);
+  --rank-b-foreground: oklch(0.809 0.105 252);
+  --rank-b-border: oklch(0.488 0.243 264);
+  --rank-c: oklch(0.208 0.042 266);
+  --rank-c-foreground: oklch(0.869 0.022 252);
+  --rank-c-border: oklch(0.446 0.043 257);
+  --rank-stop: oklch(0.279 0.041 261);
+  --rank-stop-foreground: oklch(0.704 0.04 257);
+
+  --media-fb: oklch(0.282 0.091 267);
+  --media-fb-foreground: oklch(0.882 0.059 254);
+  --media-tiktok: oklch(0.284 0.109 4);
+  --media-tiktok-foreground: oklch(0.899 0.061 343);
+  --media-google: oklch(0.266 0.065 152);
+  --media-google-foreground: oklch(0.871 0.15 154);
+  --media-other: oklch(0.279 0.041 261);
+  --media-other-foreground: oklch(0.869 0.022 252);
+
+  --chart-1: oklch(0.707 0.165 254);
+  --chart-2: oklch(0.777 0.152 182);
+  --chart-3: oklch(0.828 0.189 84);
+  --chart-4: oklch(0.712 0.194 13);
+  --chart-5: oklch(0.704 0.04 257);
+
+  --sidebar: oklch(0.208 0.042 266);
+  --sidebar-foreground: oklch(0.869 0.022 252);
+  --sidebar-primary: oklch(0.707 0.165 254);
+  --sidebar-primary-foreground: oklch(0.13 0.028 262);
+  --sidebar-accent: oklch(0.282 0.091 267);
+  --sidebar-accent-foreground: oklch(0.882 0.059 254);
+  --sidebar-border: oklch(0.372 0.044 257);
+  --sidebar-ring: oklch(0.707 0.165 254);
+}
+
+@theme inline {
+  /* --- 色（bg-* / text-* / border-* で使う） --- */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-disabled-foreground: var(--disabled-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-subtle: var(--primary-subtle);
+  --color-primary-subtle-foreground: var(--primary-subtle-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-positive: var(--positive);
+  --color-positive-subtle: var(--positive-subtle);
+  --color-positive-subtle-foreground: var(--positive-subtle-foreground);
+  --color-negative: var(--negative);
+  --color-negative-subtle: var(--negative-subtle);
+  --color-negative-subtle-foreground: var(--negative-subtle-foreground);
+  --color-warning: var(--warning);
+  --color-warning-subtle: var(--warning-subtle);
+  --color-warning-subtle-foreground: var(--warning-subtle-foreground);
+  --color-info: var(--info);
+  --color-info-subtle: var(--info-subtle);
+  --color-info-subtle-foreground: var(--info-subtle-foreground);
+  --color-rank-s: var(--rank-s);
+  --color-rank-s-foreground: var(--rank-s-foreground);
+  --color-rank-a: var(--rank-a);
+  --color-rank-a-foreground: var(--rank-a-foreground);
+  --color-rank-b: var(--rank-b);
+  --color-rank-b-foreground: var(--rank-b-foreground);
+  --color-rank-b-border: var(--rank-b-border);
+  --color-rank-c: var(--rank-c);
+  --color-rank-c-foreground: var(--rank-c-foreground);
+  --color-rank-c-border: var(--rank-c-border);
+  --color-rank-stop: var(--rank-stop);
+  --color-rank-stop-foreground: var(--rank-stop-foreground);
+  --color-media-fb: var(--media-fb);
+  --color-media-fb-foreground: var(--media-fb-foreground);
+  --color-media-tiktok: var(--media-tiktok);
+  --color-media-tiktok-foreground: var(--media-tiktok-foreground);
+  --color-media-google: var(--media-google);
+  --color-media-google-foreground: var(--media-google-foreground);
+  --color-media-other: var(--media-other);
+  --color-media-other-foreground: var(--media-other-foreground);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* --- 角丸（rounded-sm / rounded-md / rounded-lg / rounded-full） --- */
+  --radius-sm: calc(var(--radius) - 2px);   /* 6px  小ボタン・テーブル内チップ */
+  --radius-md: var(--radius);               /* 8px  カード・入力・ボタン */
+  --radius-lg: var(--radius);               /* 8px  カードも 8px。10px 以上は使わない */
+  --radius-xl: calc(var(--radius) + 4px);   /* 12px ダイアログのみ */
+
+  /* --- 文字サイズ 6段（text-xs … text-xl）。text-2xl 以上は定義しない --- */
+  --text-xs: 12px;  --text-xs--line-height: 16px;
+  --text-sm: 13px;  --text-sm--line-height: 20px;
+  --text-base: 14px; --text-base--line-height: 20px;
+  --text-md: 16px;  --text-md--line-height: 24px;
+  --text-lg: 20px;  --text-lg--line-height: 28px;
+  --text-xl: 24px;  --text-xl--line-height: 32px;
+
+  /* --- 書体 --- */
+  --font-sans: var(--font-geist), var(--font-noto-sans-jp), "Hiragino Sans", "Yu Gothic UI", system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  /* --- 影は1段 --- */
+  --shadow-card: 0 1px 2px 0 oklch(0 0 0 / 0.06);
+
+  /* --- レイアウト定数（w-sidebar, h-control など） --- */
+  --spacing-sidebar: 248px;
+  --spacing-sidebar-collapsed: 56px;
+  --spacing-control: 36px;
+  --spacing-control-sm: 32px;
+  --spacing-row: 44px;
+  --spacing-row-compact: 36px;
+
+  --ease-default: cubic-bezier(0.2, 0, 0, 1);
+}
+
+@layer base {
+  * { @apply border-border outline-ring/50; }
+  body { @apply bg-background text-foreground font-sans antialiased; font-feature-settings: "palt"; }
+  /* 数値は常に等幅数字 */
+  [data-numeric], .tabular { font-variant-numeric: tabular-nums; }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  }
+}
+
+/* layout.tsx 側:
+   const geist = Geist({ subsets: ["latin"], variable: "--font-geist" });
+   const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono" });
+   const notoJP = Noto_Sans_JP({ subsets: ["latin"], weight: ["400","500","700"], variable: "--font-noto-sans-jp" });
+   <html lang="ja" className={`${geist.variable} ${geistMono.variable} ${notoJP.variable}`}> */

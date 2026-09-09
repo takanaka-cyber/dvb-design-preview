@@ -1,0 +1,42 @@
+/* 4pt グリッド。角丸 8px 基準、影は1段だけ。 */
+:root {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  --radius: 8px;          /* カード・入力・ボタン */
+  --radius-sm: 6px;       /* テーブル内チップ、小ボタン */
+  --radius-full: 9999px;  /* ピル・チップ・アバター */
+
+  --shadow-card: 0 1px 2px 0 oklch(0 0 0 / 0.06);  /* 唯一の影。ホバー影・グラデ影なし */
+
+  /* レイアウト */
+  --page-padding: 24px;
+  --card-padding: 16px;
+  --sidebar-width: 248px;
+  --sidebar-width-collapsed: 56px;
+  --control-height: 36px;       /* Input / Select / Button 既定 */
+  --control-height-sm: 32px;
+
+  /* テーブル密度: 標準 44px行 / コンパクト 36px行 */
+  --cell-py: 12px;
+  --cell-px: 12px;
+  --row-height: 44px;
+  --cell-py-compact: 8px;
+  --cell-px-compact: 8px;
+  --row-height-compact: 36px;
+
+  /* モーション: 1種類。reduced-motion で 0 */
+  --duration: 150ms;
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --duration: 0ms; }
+}

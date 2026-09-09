@@ -1,0 +1,22 @@
+/* 書体: Geist(欧文・数字) → Noto Sans JP(和文)。サイズは 12/13/14/16/20/24 の6段。 */
+:root {
+  --font-sans: "Geist", "Noto Sans JP", "Hiragino Sans", "Yu Gothic UI", system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  --text-xs: 12px;    /* 補助ラベル・バッジ。テーブル本文には使わない */
+  --text-sm: 13px;    /* テーブル本文（最小） */
+  --text-base: 14px;  /* UI 本文 */
+  --text-md: 16px;    /* セクション見出し・フォーム見出し */
+  --text-lg: 20px;    /* ページタイトル・KPI 主値(小) */
+  --text-xl: 24px;    /* KPI 主値 */
+
+  --leading-tight: 1.25;
+  --leading-normal: 1.5;
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  --numeric: tabular-nums;  /* すべての数値セル・KPI に font-variant-numeric として適用 */
+}

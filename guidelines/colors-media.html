@@ -1,0 +1,10 @@
+<!-- @dsCard group="Colors" viewport="700x110" subtitle="媒体タグ。薄背景 + 濃文字" name="Media labels" -->
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><link rel="stylesheet" href="../styles.css">
+<style>body{padding:16px;background:var(--card)}.row{display:flex;gap:8px;flex-wrap:wrap}.sw{flex:1 1 0;min-width:90px}.chip{height:56px;border-radius:var(--radius);border:1px solid var(--border)}.lbl{font-size:12px;color:var(--muted-foreground);margin-top:6px;line-height:1.35}.lbl b{display:block;color:var(--foreground);font-weight:500;font-family:var(--font-mono);font-size:12px}</style></head><body><style>.tag{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:var(--radius-sm);font-size:12px;font-weight:500}</style>
+<div class="row" style="gap:12px;align-items:center">
+<span class="tag" style="background:var(--media-fb);color:var(--media-fb-foreground)">FB</span>
+<span class="tag" style="background:var(--media-tiktok);color:var(--media-tiktok-foreground)">TikTok</span>
+<span class="tag" style="background:var(--media-google);color:var(--media-google-foreground)">Google</span>
+<span class="tag" style="background:var(--media-other);color:var(--media-other-foreground)">その他</span>
+</div>
+<div class="lbl" style="margin-top:10px">--media-fb / --media-tiktok / --media-google / --media-other（各 -foreground）</div></body></html>

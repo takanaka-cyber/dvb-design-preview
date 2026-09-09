@@ -1,0 +1,29 @@
+<!-- @dsCard group="Components" viewport="700x300" subtitle="Button / Icon / Skeleton" name="Core" -->
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../../styles.css">
+<script type="importmap">{"imports":{"react":"../../assets/react-shim.js"}}</script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<script src="../../assets/lucide-react-shim.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+<script type="text/babel" data-type="module" src="./Icon.jsx"></script>
+<script type="text/babel" data-type="module" src="./Button.jsx"></script>
+<script type="text/babel" data-type="module" src="./Skeleton.jsx"></script>
+<style>body{padding:16px;background:var(--card)}.g{display:grid;grid-template-columns:110px 1fr;gap:10px 16px;align-items:center}.k{font-size:12px;color:var(--muted-foreground)}.r{display:flex;gap:8px;align-items:center;flex-wrap:wrap}</style>
+</head><body><div id="root"></div>
+<script type="text/babel" data-type="module">
+import { ready } from "../../assets/dvb-ready.js";
+const { Button, Icon, Skeleton } = await ready(["Button", "Icon", "Skeleton"]);
+const App = () => (
+  <div className="g">
+    <span className="k">variant</span><div className="r"><Button variant="primary" icon="Save">保存</Button><Button>キャンセル</Button><Button variant="ghost">ghost</Button><Button variant="destructive" icon="Trash2">削除</Button><Button variant="link">CRを開く</Button></div>
+    <span className="k">size sm</span><div className="r"><Button size="sm" variant="primary" icon="Plus">追加</Button><Button size="sm">フィルタ</Button><Button size="sm" variant="ghost" icon="Ellipsis" aria-label="メニュー" style={{minWidth:32,padding:0}} /></div>
+    <span className="k">loading / disabled</span><div className="r"><Button variant="primary" loading>送信中</Button><Button disabled>無効</Button><Button variant="primary" disabled>無効</Button></div>
+    <span className="k">block（日報）</span><div className="r" style={{width:320}}><Button variant="primary" block icon="Send">完了して送信</Button></div>
+    <span className="k">Icon 16 / 1.75</span><div className="r" style={{color:"var(--muted-foreground)"}}><Icon name="LayoutDashboard"/><Icon name="ListChecks"/><Icon name="BookOpen"/><Icon name="Target"/><Icon name="BarChart3"/><Icon name="FolderKanban"/><Icon name="Search"/><Icon name="Camera"/><Icon name="GraduationCap"/><Icon name="Settings"/></div>
+    <span className="k">Skeleton</span><div style={{display:"grid",gap:8,width:320}}><Skeleton width="60%" height={20}/><Skeleton width="40%"/><Skeleton/></div>
+  </div>
+);
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script></body></html>

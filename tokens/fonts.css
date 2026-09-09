@@ -1,0 +1,2 @@
+/* Geist (欧文・数字) + Noto Sans JP (和文)。本番は next/font/google で同じ2書体を読み込む */
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Noto+Sans+JP:wght@400;500;700&display=swap");

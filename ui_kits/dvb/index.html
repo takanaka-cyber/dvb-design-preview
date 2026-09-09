@@ -1,0 +1,92 @@
+<!-- @dsCard group="DVB" viewport="1440x900" subtitle="GG 週次案件ボード / 案件別まとめ / 日報 × 通常・空・読み込み・エラー" name="DVB リファレンス画面" -->
+<!-- @startingPoint section="DVB" subtitle="サイドバー + ページの業務画面シェル（3画面 × 4状態）" viewport="1440x900" -->
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><title>DVB リファレンス画面</title>
+<link rel="stylesheet" href="../../styles.css">
+<script type="importmap">{"imports":{"react":"../../assets/react-shim.js"}}</script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+<script src="../../assets/lucide-react-shim.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.26.4/babel.min.js"></script>
+<script type="text/babel" data-type="module" src="../../components/core/Icon.jsx"></script>
+<script type="text/babel" data-type="module" src="../../components/core/Button.jsx"></script>
+<script type="text/babel" data-type="module" src="../../components/core/Skeleton.jsx"></script>
+<script type="text/babel" data-type="module" src="../../components/feedback/Badge.jsx"></script>
+<script type="text/babel" data-type="module" src="../../components/feedback/ConfirmDialog.jsx"></script>
+<script type="text/babel" data-type="module" src="../../components/feedback/Toast.jsx"></script>
+<script type="text/babel" data-type="module" src="../../components/forms/Input.jsx"></script>
+<script type="text/babel" data-type="module" src="../../components/forms/Textarea.jsx"></script>
+<script type="text/babel" data-type="module" src="../../components/forms/Select.jsx"></script>
+<script type="text/babel" data-type="module" src="../../components/forms/Field.jsx"></script>
+<script type="text/babel" data-type="module" src="../../components/forms/SaveStatus.jsx"></script>
+<script type="text/babel" data-type="module" src="../../components/data/KpiCard.jsx"></script>
+<script type="text/babel" data-type="module" src="../../components/data/MetricCell.jsx"></script>
+<script type="text/babel" data-type="module" src="../../components/data/DataTable.jsx"></script>
+<script type="text/babel" data-type="module" src="../../components/data/TaskRow.jsx"></script>
+<script type="text/babel" data-type="module" src="../../components/layout/PageHeader.jsx"></script>
+<script type="text/babel" data-type="module" src="../../components/layout/SectionHeading.jsx"></script>
+<script type="text/babel" data-type="module" src="../../components/layout/FilterBar.jsx"></script>
+<script type="text/babel" data-type="module" src="../../components/layout/EmptyState.jsx"></script>
+<script type="text/babel" data-type="module" src="../../components/layout/Sidebar.jsx"></script>
+<script type="text/babel" data-type="module" src="./BoardScreen.jsx"></script>
+<script type="text/babel" data-type="module" src="./ProjectScreen.jsx"></script>
+<script type="text/babel" data-type="module" src="./MboScreen.jsx"></script>
+<style>
+  html,body{height:100%} body{background:oklch(0.87 0.01 250);overflow:auto}
+  .bar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:16px;padding:8px 16px;background:var(--foreground);color:#fff;font-size:12px;min-width:max-content}
+  .bar .grp{display:flex;gap:2px;background:oklch(1 0 0 / .12);border-radius:6px;padding:2px}
+  .bar button{height:24px;padding:0 10px;border:0;border-radius:4px;background:transparent;color:#fff;font-size:12px;cursor:pointer;opacity:.8}
+  .bar button[aria-pressed="true"]{background:#fff;color:var(--foreground);opacity:1;font-weight:600}
+  .bar .lbl{opacity:.6;margin-right:-8px}
+</style>
+</head><body><div id="root"></div>
+<script type="text/babel" data-type="module">
+import { ready } from "../../assets/dvb-ready.js";
+import { NAV_GROUPS } from "./data.js";
+const D = await ready(["Sidebar","Toast","Button","DataTable","TaskRow","KpiCard","PageHeader","FilterBar","Select","Field","Textarea","SaveStatus","EmptyState","SectionHeading","Badge","ConfirmDialog","MetricCell","Input"]);
+await new Promise((r) => { const t = () => (window.DVBKit && window.DVBKit.BoardScreen && window.DVBKit.ProjectScreen && window.DVBKit.MboScreen) ? r() : setTimeout(t, 16); t(); });
+const { Sidebar, Toast } = D;
+const { BoardScreen, ProjectScreen, MboScreen } = window.DVBKit;
+const { useState, useEffect } = React;
+
+const SCREENS = [["board","案件別まとめ（ボード）"],["project","案件別まとめ（1案件）"],["mbo","日報"]];
+const STATES = [["normal","通常"],["empty","空"],["loading","読み込み"],["error","エラー"]];
+const parse = () => Object.fromEntries(new URLSearchParams(location.hash.slice(1)));
+
+function App() {
+  const q = parse();
+  const [screen, setScreen] = useState(SCREENS.some(s=>s[0]===q.screen) ? q.screen : "board");
+  const [state, setState] = useState(q.state || "normal");
+  const [width, setWidth] = useState(q.w === "1280" ? 1280 : 1440);
+  const [collapsed, setCollapsed] = useState(q.nav === "min");
+  const [toasts, setToasts] = useState([]);
+  useEffect(() => { location.hash = new URLSearchParams({ screen, state, w: width, nav: collapsed ? "min" : "full" }).toString(); }, [screen, state, width, collapsed]);
+  useEffect(() => { const h = () => { const q = parse(); if (q.screen && q.screen !== screen) setScreen(q.screen); if (q.state && q.state !== state) setState(q.state); if (q.w && Number(q.w) !== width) setWidth(Number(q.w)); if (q.nav) setCollapsed(q.nav === "min"); }; window.addEventListener("hashchange", h); return () => window.removeEventListener("hashchange", h); }, [screen, state, width, collapsed]);
+  const toast = (t) => { const id = Date.now() + Math.random(); setToasts((ts) => [...ts.slice(-2), { ...t, id }]); if (t.kind !== "error") setTimeout(() => setToasts((ts) => ts.filter((x) => x.id !== id)), t.kind === "undo" ? 6000 : 3000); };
+  const close = (id) => setToasts((ts) => ts.filter((x) => x.id !== id));
+  const Screen = screen === "board" ? BoardScreen : screen === "project" ? ProjectScreen : MboScreen;
+  const states = screen === "mbo" ? [...STATES, ["sent","送信済み"]] : STATES;
+  const narrow = width === 1280;
+  return (
+    <>
+      <div className="bar" role="toolbar" aria-label="キット操作">
+        <span style={{fontWeight:600,fontSize:13}}>DVB リファレンス</span>
+        <span className="lbl">画面</span><div className="grp">{SCREENS.map(([k,l]) => <button key={k} aria-pressed={screen===k} onClick={() => setScreen(k)}>{l}</button>)}</div>
+        <span className="lbl">状態</span><div className="grp">{states.map(([k,l]) => <button key={k} aria-pressed={state===k} onClick={() => setState(k)}>{l}</button>)}</div>
+        <span className="lbl">幅</span><div className="grp">{[1440,1280].map((w) => <button key={w} aria-pressed={width===w} onClick={() => setWidth(w)}>{w}</button>)}</div>
+        <span className="lbl">ナビ</span><div className="grp"><button aria-pressed={!collapsed} onClick={() => setCollapsed(false)}>248</button><button aria-pressed={collapsed} onClick={() => setCollapsed(true)}>56</button></div>
+      </div>
+      <div style={{ width, margin: "16px auto", background: "var(--background)", display: "flex", minHeight: 860, boxShadow: "0 0 0 1px oklch(0 0 0 / .08)", fontFamily: "var(--font-sans)", color: "var(--foreground)", position: "relative" }}>
+        <Sidebar groups={NAV_GROUPS} activeKey={screen === "board" ? "project" : screen} onSelect={(k) => k === "project" ? setScreen("board") : SCREENS.some((s) => s[0] === k) ? setScreen(k) : toast({ kind: "info", message: "このキットには含まれない画面です" })} collapsed={collapsed} onToggle={() => setCollapsed(!collapsed)} date="9/8 (火)" time="15:56" user={{ name: "髙仲 秀介", role: "リーダー" }} height="auto" style={{ position: "sticky", top: 40, alignSelf: "flex-start", height: 860 }} />
+        <main style={{ flex: 1, minWidth: 0, padding: 24 }}>
+          <Screen key={screen + state + width} state={state} toast={toast} narrow={narrow} />
+        </main>
+        <div aria-live="polite" style={{ position: "fixed", right: 24, bottom: 24, display: "flex", flexDirection: "column", gap: 8, zIndex: 60 }}>
+          {toasts.map((t) => <Toast key={t.id} kind={t.kind} message={t.message} actionLabel={t.actionLabel} onAction={() => { t.onAction && t.onAction(); close(t.id); }} onClose={() => close(t.id)} />)}
+        </div>
+      </div>
+    </>
+  );
+}
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script></body></html>
