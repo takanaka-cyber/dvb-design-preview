@@ -38,7 +38,7 @@ export function ProjectTaskSection({ state = "normal", toast }) {
   ];
   return (
     <section style={card} aria-labelledby="board-tasks">
-      <SectionHeading icon="ListChecks" title="タスクの追加・完了管理" count={loading ? undefined : tasks.filter((t) => !t.done).length} description="案件に紐づくタスク。金曜に完了チェック" />
+      <SectionHeading icon="ListChecks" title="タスクの追加・完了管理" count={loading ? undefined : tasks.filter((t) => !t.done).length} description="案件に紐づくタスク。金曜に完了チェック"><a href="#screen=tasks-weekly" style={{ fontSize: 13, fontWeight: 500, color: "var(--primary)", whiteSpace: "nowrap" }}>全案件を一枚で見る →</a></SectionHeading>
       {/* 追加フォーム行（右端「追加」） */}
       <div style={{ display: "grid", gridTemplateColumns: "200px minmax(0,1fr) 140px 150px auto", gap: 8, alignItems: "center" }}>
         <Select size="sm" value={form.project} placeholder="案件を選ぶ" options={PROJECTS} onChange={(e) => setForm({ ...form, project: e.target.value })} width="100%" aria-label="案件" />

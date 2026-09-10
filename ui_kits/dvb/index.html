@@ -59,6 +59,8 @@
 <script type="text/babel" data-type="module" src="./HitMeasuresScreen.jsx"></script>
 <script type="text/babel" data-type="module" src="./KnowledgeScreen.jsx"></script>
 <script type="text/babel" data-type="module" src="./BoardV2Screen.jsx"></script>
+<!-- 9/10 担当者要望: 全案件のタスクが一枚で見える一覧 -->
+<script type="text/babel" data-type="module" src="./WeeklyTasksScreen.jsx"></script>
 <script type="text/babel" data-type="module" src="./AnalyticsScreen.jsx"></script>
 <script type="text/babel" data-type="module" src="./ShootingScheduleScreen.jsx"></script>
 <script type="text/babel" data-type="module" src="./LinksScreen.jsx"></script>
@@ -90,7 +92,7 @@
 import { ready } from "../../assets/dvb-ready.js";
 import { NAV_GROUPS, NAV_TO_SCREEN } from "./data.js";
 const D = await ready(["Sidebar","Toast","Button","DataTable","TaskRow","KpiCard","PageHeader","FilterBar","Select","Field","Textarea","SaveStatus","EmptyState","SectionHeading","Badge","ConfirmDialog","MetricCell","Input","WeekSelector","FreshnessBadge","FreshnessNotice","DraftRestoreBanner","Progress","SegmentedControl","Dialog","Switch","Checkbox","Tabs","ChatPanel","LinkTile","SubNav","AuthCard"]);
-const KIT = ["BoardScreen","ProjectScreen","MboScreen","WeeklyReportScreen","MboMobileScreen","MboHistoryScreen","MboMonthlyScreen","ProjectMobileScreen","GoalScreen","CommitScreen","DashboardScreen","TasksScreen","SectionDetailScreen","DashboardScreenV2","CommitScreenV2","EvaluationScreen","HitMeasuresScreen","KnowledgeScreen","BoardV2Screen","AnalyticsScreen","ShootingScheduleScreen","LinksScreen","ManualScreen","SettingsScreen","TrainingHomeScreen","TrainingScheduleScreen","TrainingLearningScreen","TrainingChecklistScreen","TrainingQuizScreen","TrainingValuesScreen","TrainingCrOutputScreen","TrainingGlossaryScreen","TrainingQaScreen","LoginScreen","RegisterScreen","AssigneeListScreen","AssigneeDetailScreen","AdminProjectsScreen","AdminTypeBScreen","AdminTypeCScreen","AdminWeeklyScreen","AccessLogsScreen","AdminUsersScreen","AdminAssigneesScreen","AdminGoalsScreen","AdminSystemScreen","AdminOnboardingScreen"];
+const KIT = ["BoardScreen","ProjectScreen","MboScreen","WeeklyReportScreen","MboMobileScreen","MboHistoryScreen","MboMonthlyScreen","ProjectMobileScreen","GoalScreen","CommitScreen","DashboardScreen","TasksScreen","SectionDetailScreen","DashboardScreenV2","CommitScreenV2","EvaluationScreen","HitMeasuresScreen","KnowledgeScreen","BoardV2Screen","WeeklyTasksScreen","AnalyticsScreen","ShootingScheduleScreen","LinksScreen","ManualScreen","SettingsScreen","TrainingHomeScreen","TrainingScheduleScreen","TrainingLearningScreen","TrainingChecklistScreen","TrainingQuizScreen","TrainingValuesScreen","TrainingCrOutputScreen","TrainingGlossaryScreen","TrainingQaScreen","LoginScreen","RegisterScreen","AssigneeListScreen","AssigneeDetailScreen","AdminProjectsScreen","AdminTypeBScreen","AdminTypeCScreen","AdminWeeklyScreen","AccessLogsScreen","AdminUsersScreen","AdminAssigneesScreen","AdminGoalsScreen","AdminSystemScreen","AdminOnboardingScreen"];
 await new Promise((r) => { const t = () => (window.DVBKit && KIT.every((k) => window.DVBKit[k])) ? r() : setTimeout(t, 16); t(); });
 const { Sidebar, Toast } = D;
 const K = window.DVBKit;
@@ -117,6 +119,7 @@ const SCREENS = [
   { key: "weekly", label: "週次レポート", group: "weekly", nav: "weekly", pc: K.WeeklyReportScreen, pcStates: [...S4, ["view","閲覧モード"]], mobile: (p) => <K.WeeklyReportScreen {...p} mobile />, mobileStates: S2 },
   { key: "project", label: "案件別まとめ", group: "weekly", nav: "project", pc: K.ProjectScreen, pcStates: S4, mobile: K.ProjectMobileScreen, mobileStates: S2 },
   { key: "board-v2", label: "先週比較・案件タスク", group: "weekly", nav: "project", pc: K.BoardV2Screen, pcStates: S4 },
+  { key: "tasks-weekly", label: "今週のタスク一覧", group: "weekly", nav: "project", pc: K.WeeklyTasksScreen, pcStates: S4, mobile: (p) => <K.WeeklyTasksScreen {...p} mobile />, mobileStates: S4 },
   { key: "evaluation", label: "目標（評価シート）", group: "weekly", nav: "goal", pc: K.EvaluationScreen, pcStates: S4, mobile: (p) => <K.EvaluationScreen {...p} mobile />, mobileStates: [S4[0]] },
   { key: "hit", label: "ヒット施策", group: "weekly", nav: "hit", pc: K.HitMeasuresScreen, pcStates: S4 },
   { key: "knowledge", label: "検証ナレッジ", group: "weekly", nav: "knowledge", pc: K.KnowledgeScreen, pcStates: S4 },

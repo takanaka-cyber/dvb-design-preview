@@ -610,3 +610,13 @@ export const ASSIGNEE_DELIVERED = [
 ];
 /** バッチ 4: アセクリ・ルーム管理の右カラム（ASSIGNEE_LIST + ルーム紐付け・トークン） */
 export const ADMIN_ASSIGNEES = ASSIGNEE_LIST.map((a, i) => ({ ...a, room: ["r3", "r4", "", ""][i], token: i < 3, active: true }));
+
+/* ---------- 今週のタスク一覧（全案件を一枚で。9/10 担当者「全案件のタスクが一枚で見える一覧」） ---------- */
+/** PROJECT_TASKS（先週比較 下段）と同じ形。案件×担当者×1 行テキスト。BOARD_ROWS の全案件を対象にし、タスクの無い案件（F社）も一覧に出す */
+export const WEEKLY_TASK_ROWS = [
+  ...PROJECT_TASKS,
+  { id: "p7", project: "A社 記事LP", text: "類似 1% の予算を 1.5 倍に", assignee: "古木", due: "9/11", done: false },
+  { id: "p8", project: "C社 美容D2C", text: "縦型 15 秒の 2 本目を入稿", assignee: "大倉", due: "9/12", done: false },
+  { id: "p9", project: "B社 通販", text: "Google 検索 KW の除外を週次に戻す", assignee: "岩崎", due: "9/10", done: true },
+  { id: "p10", project: "E社 保険比較", text: "LP の FAQ 追加（保険料の目安）", assignee: "三冨", due: "9/12", done: false },
+];
