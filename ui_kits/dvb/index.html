@@ -1,6 +1,6 @@
 <!-- @dsCard group="DVB" viewport="1440x900" subtitle="45 画面 × 状態 × 幅 1440 / 1280 / 393 / 430（毎日 / 週次・ツール / 研修・外部 / 管理）" name="DVB リファレンス画面" -->
 <!-- @startingPoint section="DVB" subtitle="サイドバー + ページの業務画面シェル（PC 10 画面 + ラフ 3 枚、スマホ 4 画面）" viewport="1440x900" -->
-<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><title>DVB リファレンス画面</title>
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><title>DVB リファレンス画面</title><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="stylesheet" href="../../styles.css">
 <script type="importmap">{"imports":{"react":"../../assets/react-shim.js"}}</script>
 <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
@@ -77,6 +77,7 @@
 <script type="text/babel" data-type="module" src="./AdminScreens2.jsx"></script>
 <style>
   html,body{height:100%} body{background:oklch(0.87 0.01 250);overflow:auto}
+  body.app{background:var(--background)}
   .bar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:8px 16px;flex-wrap:wrap;padding:8px 16px;background:var(--foreground);color:#fff;font-size:12px}
   .bar .grp{display:flex;gap:2px;background:oklch(1 0 0 / .12);border-radius:6px;padding:2px}
   .bar button{height:24px;padding:0 10px;border:0;border-radius:4px;background:transparent;color:#fff;font-size:12px;cursor:pointer;opacity:.8}
@@ -154,6 +155,10 @@ const SCREENS = [
 ];
 const WIDTHS = [1440, 1280, 393, 430];
 const parse = () => Object.fromEntries(new URLSearchParams(location.hash.slice(1)));
+/* 実機モード（bar=0）: ツールバーを消し、枠なしでブラウザ幅いっぱいに描く。localhost / file 以外（GitHub Pages など）では既定で ON。bar=1 でツールバーを出す */
+const APP_DEFAULT = !/^(localhost|127\.0\.0\.1|)$/.test(location.hostname);
+const getVw = () => document.documentElement.clientWidth || window.innerWidth; /* innerWidth はスマホでページが横に溢れると内容幅に膨らむので clientWidth（レイアウト幅）を使う */
+const useViewportWidth = () => { const [vw, setVw] = useState(getVw); useEffect(() => { const h = () => setVw(getVw()); window.addEventListener("resize", h); window.addEventListener("orientationchange", h); return () => { window.removeEventListener("resize", h); window.removeEventListener("orientationchange", h); }; }, []); return vw; };
 const USER = { name: "髙仲 秀介", role: "リーダー" };
 
 function App() {
@@ -162,27 +167,32 @@ function App() {
   const [state, setState] = useState(q.state || "normal");
   const [width, setWidth] = useState(WIDTHS.includes(Number(q.w)) ? Number(q.w) : 1440);
   const [collapsed, setCollapsed] = useState(q.nav === "min");
+  const [app, setApp] = useState(q.bar ? q.bar !== "1" : APP_DEFAULT);
+  const vw = useViewportWidth();
   const [menu, setMenu] = useState(false);
   const [toasts, setToasts] = useState([]);
-  useEffect(() => { location.hash = new URLSearchParams({ screen, state, w: width, nav: collapsed ? "min" : "full" }).toString(); }, [screen, state, width, collapsed]);
-  useEffect(() => { const h = () => { const q = parse(); if (q.screen && q.screen !== screen) setScreen(q.screen); if (q.state && q.state !== state) setState(q.state); if (q.w && Number(q.w) !== width) setWidth(Number(q.w)); if (q.nav) setCollapsed(q.nav === "min"); }; window.addEventListener("hashchange", h); return () => window.removeEventListener("hashchange", h); }, [screen, state, width, collapsed]);
+  useEffect(() => { location.hash = new URLSearchParams({ screen, state, w: width, nav: collapsed ? "min" : "full", bar: app ? "0" : "1" }).toString(); }, [screen, state, width, collapsed, app]);
+  useEffect(() => { document.body.classList.toggle("app", app); }, [app]);
+  useEffect(() => { const h = () => { const q = parse(); if (q.screen && q.screen !== screen) setScreen(q.screen); if (q.state && q.state !== state) setState(q.state); if (q.w && Number(q.w) !== width) setWidth(Number(q.w)); if (q.nav) setCollapsed(q.nav === "min"); if (q.bar) setApp(q.bar !== "1"); }; window.addEventListener("hashchange", h); return () => window.removeEventListener("hashchange", h); }, [screen, state, width, collapsed]);
   const toast = (t) => { const id = Date.now() + Math.random(); setToasts((ts) => [...ts.slice(-2), { ...t, id }]); if (t.kind !== "error") setTimeout(() => setToasts((ts) => ts.filter((x) => x.id !== id)), t.kind === "undo" ? 6000 : 3000); };
   const close = (id) => setToasts((ts) => ts.filter((x) => x.id !== id));
 
-  const mobile = width < 600;
+  /* 実機モードでは選択幅ではなく実ブラウザ幅で描く（スマホ実機なら端末幅） */
+  const W = app ? vw : width;
+  const mobile = W < 600;
   const def = SCREENS.find((s) => s.key === screen);
   const supported = mobile ? !!def.mobile : true;
   const states = mobile ? (def.mobileStates || []) : def.pcStates;
   const st = states.some((s) => s[0] === state) ? state : "normal";
   const Screen = mobile ? def.mobile : def.pc;
-  const narrow = width === 1280;
+  const narrow = app ? W < 1366 : width === 1280;
   const navigate = (k) => { const s = NAV_TO_SCREEN[k] || (SCREENS.some((x) => x.key === k) ? k : null); if (s) { setScreen(s); setMenu(false); } else toast({ kind: "info", message: "このキットには含まれない画面です" }); };
   const toastNodes = toasts.map((t) => <Toast key={t.id} kind={t.kind} message={t.message} actionLabel={t.actionLabel} onAction={() => { t.onAction && t.onAction(); close(t.id); }} onClose={() => close(t.id)} style={mobile ? { width: "auto" } : undefined} />);
   const Menu = L.Menu;
 
   return (
     <>
-      <div className="bar" role="toolbar" aria-label="キット操作">
+      {app ? null : <div className="bar" role="toolbar" aria-label="キット操作">
         <span style={{fontWeight:600,fontSize:13}}>DVB リファレンス</span>
         {GROUPS.map(([g, gl]) => { const list = SCREENS.filter((s) => s.group === g); return (<React.Fragment key={g}>
           <span className="lbl">{gl}</span>
@@ -191,16 +201,16 @@ function App() {
         <span className="lbl">状態</span><div className="grp">{states.map(([k,l]) => <button key={k} aria-pressed={st===k} onClick={() => setState(k)}>{l}</button>)}</div>
         <span className="lbl">幅</span><div className="grp">{WIDTHS.map((w) => <button key={w} aria-pressed={width===w} onClick={() => { setWidth(w); if (w < 600 && !def.mobile) setScreen("mbo"); }}>{w}</button>)}</div>
         {!mobile ? <><span className="lbl">ナビ</span><div className="grp"><button aria-pressed={!collapsed} onClick={() => setCollapsed(false)}>248</button><button aria-pressed={collapsed} onClick={() => setCollapsed(true)}>56</button></div></> : null}
-      </div>
+      </div>}
 
       {def.bare ? (
         /* バッチ 3: サイドバーなしレイアウト（ログイン・登録・アセクリ）。画面が自分のヘッダ／中央寄せを描く */
-        <div style={{ width, height: mobile ? 852 : undefined, minHeight: mobile ? undefined : 860, margin: "16px auto", background: "var(--background)", display: "flex", flexDirection: "column", boxShadow: "0 0 0 1px oklch(0 0 0 / .08)", fontFamily: "var(--font-sans)", color: "var(--foreground)", position: "relative", overflow: mobile ? "hidden" : "visible", borderRadius: mobile ? 12 : 0 }}>
+        <div style={app ? { width: "100%", minHeight: "100dvh", background: "var(--background)", display: "flex", flexDirection: "column", fontFamily: "var(--font-sans)", color: "var(--foreground)", position: "relative" } : { width, height: mobile ? 852 : undefined, minHeight: mobile ? undefined : 860, margin: "16px auto", background: "var(--background)", display: "flex", flexDirection: "column", boxShadow: "0 0 0 1px oklch(0 0 0 / .08)", fontFamily: "var(--font-sans)", color: "var(--foreground)", position: "relative", overflow: mobile ? "hidden" : "visible", borderRadius: mobile ? 12 : 0 }}>
           <Screen key={screen + st + width} state={st} toast={toast} mobile={mobile} narrow={narrow} onNavigate={navigate} />
           <div aria-live="polite" style={mobile ? { position: "absolute", left: 16, right: 16, bottom: 24, display: "flex", flexDirection: "column", gap: 8, zIndex: 60, pointerEvents: "none" } : { position: "fixed", right: 24, bottom: 24, display: "flex", flexDirection: "column", gap: 8, zIndex: 60 }}>{toastNodes}</div>
         </div>
       ) : mobile ? (
-        <div style={{ width, height: 852, margin: "16px auto", background: "var(--background)", display: "flex", flexDirection: "column", boxShadow: "0 0 0 1px oklch(0 0 0 / .08)", fontFamily: "var(--font-sans)", color: "var(--foreground)", position: "relative", overflow: "hidden", borderRadius: 12 }}>
+        <div style={app ? { width: "100%", height: "100dvh", background: "var(--background)", display: "flex", flexDirection: "column", fontFamily: "var(--font-sans)", color: "var(--foreground)", position: "relative", overflow: "hidden" } : { width, height: 852, margin: "16px auto", background: "var(--background)", display: "flex", flexDirection: "column", boxShadow: "0 0 0 1px oklch(0 0 0 / .08)", fontFamily: "var(--font-sans)", color: "var(--foreground)", position: "relative", overflow: "hidden", borderRadius: 12 }}>
           <header style={{ height: 56, display: "flex", alignItems: "center", gap: 4, padding: "0 8px 0 4px", background: "var(--card)", borderBottom: "1px solid var(--border)", flexShrink: 0 }}>
             <button type="button" aria-label="メニュー" onClick={() => setMenu(true)} style={{ width: 44, height: 44, display: "grid", placeItems: "center", border: 0, background: "transparent", color: "var(--foreground)", borderRadius: "var(--radius-sm)", cursor: "pointer" }}><Menu size={22} strokeWidth={1.75} /></button>
             <span style={{ fontSize: 17, fontWeight: 700, letterSpacing: "0.04em" }}>AXIS</span>
@@ -208,15 +218,21 @@ function App() {
           </header>
           <main style={{ flex: 1, minHeight: 0, overflow: "auto", padding: "16px 16px 0", display: "flex", flexDirection: "column" }}>
             <div style={{ flex: 1, display: "flex", flexDirection: "column", paddingBottom: screen === "mbo" ? 0 : 16 }}>
-            {supported ? <Screen key={screen + st + width} state={st} toast={toast} mobile onNavigate={navigate} /> : <div style={{ padding: 24, textAlign: "center", color: "var(--muted-foreground)", fontSize: 14 }}>この画面は PC 幅のみです。</div>}
+            {supported ? <Screen key={screen + st + width} state={st} toast={toast} mobile onNavigate={navigate} /> : app ? (
+              /* 実機モードでスマホ版が無い画面: 行き止まりにせず PC 版を横スクロールで見せる */
+              <div style={{ margin: "0 -16px", overflowX: "auto", WebkitOverflowScrolling: "touch" }}>
+                <div style={{ position: "sticky", left: 0, padding: "8px 16px", fontSize: 12, color: "var(--muted-foreground)", background: "var(--muted)", borderBottom: "1px solid var(--border)" }}>この画面はスマホ版の設計がまだありません。PC 版を横スクロールで表示しています。</div>
+                <div style={{ width: 1280, padding: 16 }}>{React.createElement(def.pc, { key: screen + st + "pc", state: st, toast, narrow: true, onNavigate: navigate })}</div>
+              </div>
+            ) : <div style={{ padding: 24, textAlign: "center", color: "var(--muted-foreground)", fontSize: 14 }}>この画面は PC 幅のみです。</div>}
             </div>
           </main>
           <Sidebar drawer open={menu} onClose={() => setMenu(false)} groups={NAV_GROUPS} activeKey={def.nav} onSelect={navigate} user={USER} onSettings={() => toast({ kind: "info", message: "設定を開く" })} />
           <div aria-live="polite" style={{ position: "absolute", left: 16, right: 16, bottom: 96, display: "flex", flexDirection: "column", gap: 8, zIndex: 60, pointerEvents: "none" }}>{toastNodes}</div>
         </div>
       ) : (
-        <div style={{ width, margin: "16px auto", background: "var(--background)", display: "flex", minHeight: 860, boxShadow: "0 0 0 1px oklch(0 0 0 / .08)", fontFamily: "var(--font-sans)", color: "var(--foreground)", position: "relative" }}>
-          <Sidebar groups={NAV_GROUPS} activeKey={def.nav} onSelect={navigate} collapsed={collapsed} onToggle={() => setCollapsed(!collapsed)} date="9/9 (火)" time="15:56" user={USER} onSettings={() => toast({ kind: "info", message: "設定を開く" })} height="auto" style={{ position: "sticky", top: 40, alignSelf: "flex-start", height: 860 }} />
+        <div style={app ? { width: "100%", minHeight: "100dvh", background: "var(--background)", display: "flex", fontFamily: "var(--font-sans)", color: "var(--foreground)", position: "relative" } : { width, margin: "16px auto", background: "var(--background)", display: "flex", minHeight: 860, boxShadow: "0 0 0 1px oklch(0 0 0 / .08)", fontFamily: "var(--font-sans)", color: "var(--foreground)", position: "relative" }}>
+          <Sidebar groups={NAV_GROUPS} activeKey={def.nav} onSelect={navigate} collapsed={collapsed} onToggle={() => setCollapsed(!collapsed)} date="9/9 (火)" time="15:56" user={USER} onSettings={() => toast({ kind: "info", message: "設定を開く" })} height="auto" style={app ? { position: "sticky", top: 0, alignSelf: "flex-start", height: "100dvh" } : { position: "sticky", top: 40, alignSelf: "flex-start", height: 860 }} />
           <main style={{ flex: 1, minWidth: 0, padding: 24 }}>
             <Screen key={screen + st + width} state={st} toast={toast} narrow={narrow} onNavigate={navigate} />
           </main>
