@@ -147,7 +147,7 @@ export const NAV_GROUPS = [
   ] },
 ];
 /** キット内で実画面があるナビ項目 → screen キー */
-export const NAV_TO_SCREEN = { board: "board", project: "project", mbo: "mbo", weekly: "weekly", goal: "goal", commit: "commit", dashboard: "dashboard", tasks: "tasks" };
+export const NAV_TO_SCREEN = { board: "board", project: "board-v2", mbo: "mbo", weekly: "weekly", goal: "goal", commit: "commit", dashboard: "dashboard", tasks: "tasks" };
 
 /* ====================== バッチ 1（2026-09-10 追記）: タスク管理 / 課のタスク詳細 / ダッシュボード / コミットメント ====================== */
 export const TODAY_ISO = "2026-09-09";

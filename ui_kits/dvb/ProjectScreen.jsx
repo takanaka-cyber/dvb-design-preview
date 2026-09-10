@@ -28,7 +28,7 @@ export function ProjectScreen({ state = "normal", toast, narrow }) {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-      <a href="#screen=board" style={{ alignSelf: "flex-start", display: "inline-flex", alignItems: "center", gap: 4, fontSize: 13, fontWeight: 500, color: "var(--primary)", marginBottom: -8 }}>← ボード（全案件）へ戻る</a>
+      <a href="#screen=board-v2" style={{ alignSelf: "flex-start", display: "inline-flex", alignItems: "center", gap: 4, fontSize: 13, fontWeight: 500, color: "var(--primary)", marginBottom: -8 }}>← ボード（全案件）へ戻る</a>
       <PageHeader icon="FolderKanban" title="A社 記事LP" description="案件別まとめ ＞ 1案件。実績・今週のタスク・検証CP・週次施策・担当者入力">
         <Button icon="ExternalLink">シートを開く</Button>
         <Button icon="ExternalLink">プロマネを開く</Button>
