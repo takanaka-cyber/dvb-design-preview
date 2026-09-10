@@ -41,6 +41,8 @@ export function WeeklyTasksScreen({ state = "normal", toast, narrow, mobile, onN
   const { IconButton, ErrorBand } = window.DVBKit;
   const L = window.LucideReact; const Plus = L.Plus, Cal = L.Calendar;
   const loading = state === "loading", empty = state === "empty", error = state === "error";
+  // 閲覧のみ = 役職（ADMIN/DIRECTOR/MANAGER）でも GG 事業部所属でもない人。追加・削除は出さず、チェックは無効（実装 PR #41 の canEdit=false と同じ）
+  const canEdit = state !== "readonly";
   const [week, setWeek] = useState(0);
   const [tasks, setTasks] = useState(loading || empty || error ? [] : WEEKLY_TASK_ROWS);
   const [view, setView] = useState("project");
@@ -64,7 +66,7 @@ export function WeeklyTasksScreen({ state = "normal", toast, narrow, mobile, onN
   const toggle = (t) => { setTasks((ts) => ts.map((x) => (x.id === t.id ? { ...x, done: !x.done } : x))); toast({ kind: "undo", message: t.done ? "未完了に戻しました" : "タスクを完了にしました", actionLabel: "元に戻す", onAction: () => setTasks((ts) => ts.map((x) => (x.id === t.id ? { ...x, done: t.done } : x))) }); };
   const add = (v) => { setTasks((ts) => [...ts, { id: "w" + Date.now(), project: v.project, text: v.text, assignee: v.assignee, due: v.due, done: false }]); toast({ kind: "success", message: `${v.project} にタスクを追加しました` }); };
   const del = (t) => setConfirm({ text: t.text, onConfirm: () => { setTasks((ts) => ts.filter((x) => x.id !== t.id)); setConfirm(null); toast({ kind: "success", message: "タスクを削除しました" }); } });
-  const carryOver = () => { const prev = PROJECT_TASKS.filter((t) => !t.done).map((t) => ({ ...t, id: "c" + t.id })); setTasks(prev); toast({ kind: "success", message: `先週の未完了 ${prev.length} 件を持ち越しました` }); };
+  const carryOver = () => { const prev = PROJECT_TASKS.filter((t) => !t.done).map((t) => ({ ...t, id: "c" + t.id, due: "", overdue: false })); setTasks(prev); toast({ kind: "success", message: `先週の未完了 ${prev.length} 件を持ち越しました` }); };
   const goBoard = () => (onNavigate ? onNavigate("board-v2") : (location.hash = "#screen=board-v2"));
 
   const duePill = (t) => t.due ? (
@@ -79,9 +81,9 @@ export function WeeklyTasksScreen({ state = "normal", toast, narrow, mobile, onN
   const row = (t) => mobile ? (
     <div key={t.id} role="row" style={{ display: "flex", flexDirection: "column", gap: 6, padding: "10px 8px 10px 12px", borderTop: "1px solid var(--border)" }}>
       <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
-        <Checkbox checked={t.done} onChange={() => toggle(t)} />
+        <Checkbox checked={t.done} disabled={!canEdit} onChange={() => toggle(t)} />
         <span style={{ ...textStyle(t), flex: 1 }}>{t.text}</span>
-        <IconButton icon="Trash2" label="削除" onClick={() => del(t)} />
+        {canEdit ? <IconButton icon="Trash2" label="削除" onClick={() => del(t)} /> : null}
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: 8, paddingLeft: 28, flexWrap: "wrap" }}>
         {view === "project" ? <Badge kind="assignee" value={t.assignee} size="sm" /> : projectChip(t)}
@@ -91,12 +93,12 @@ export function WeeklyTasksScreen({ state = "normal", toast, narrow, mobile, onN
     </div>
   ) : (
     <div key={t.id} role="row" style={{ display: "grid", gridTemplateColumns: "44px minmax(0,1fr) 150px 110px 84px 40px", alignItems: "center", minHeight: 36, padding: "0 4px 0 0", borderTop: "1px solid var(--border)" }}>
-      <div style={{ display: "grid", placeItems: "center" }}><Checkbox checked={t.done} onChange={() => toggle(t)} /></div>
+      <div style={{ display: "grid", placeItems: "center" }}><Checkbox checked={t.done} disabled={!canEdit} onChange={() => toggle(t)} /></div>
       <span style={textStyle(t)}>{t.text}</span>
       <div>{view === "project" ? <Badge kind="assignee" value={t.assignee} /> : projectChip(t)}</div>
       <div>{duePill(t)}</div>
       <div><Badge value={t.done ? "done" : t.overdue ? "late" : "todo"} /></div>
-      <div style={{ display: "grid", placeItems: "center" }}><IconButton icon="Trash2" label="削除" onClick={() => del(t)} /></div>
+      <div style={{ display: "grid", placeItems: "center" }}>{canEdit ? <IconButton icon="Trash2" label="削除" onClick={() => del(t)} /> : null}</div>
     </div>
   );
 
@@ -111,7 +113,7 @@ export function WeeklyTasksScreen({ state = "normal", toast, narrow, mobile, onN
         {view === "project" && !mobile ? <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>{people.map((n) => <Badge key={n} kind="assignee" value={n} size="sm" />)}</div> : null}
         <span style={{ fontSize: 12, color: g.rows.length ? "var(--muted-foreground)" : "var(--warning-subtle-foreground)", fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>{g.rows.length ? `未完了 ${openN} ／ ${g.rows.length}件` : "今週のタスクなし"}</span>
         <span style={{ flex: 1 }} />
-        {adding === g.key ? null : <Button size="sm" variant="ghost" icon="Plus" onClick={() => setAdding(g.key)}>タスクを追加</Button>}
+        {adding === g.key || !canEdit ? null : <Button size="sm" variant="ghost" icon="Plus" onClick={() => setAdding(g.key)}>タスクを追加</Button>}
       </div>
     );
   };
@@ -120,7 +122,7 @@ export function WeeklyTasksScreen({ state = "normal", toast, narrow, mobile, onN
 
   const body = error ? <div style={{ padding: 12 }}><ErrorBand message="今週のタスクを取得できませんでした" onRetry={() => toast({ kind: "info", message: "再試行しました" })} /></div>
     : loading ? skeleton
-    : tasks.length === 0 ? <div style={{ padding: 16 }}><EmptyState variant="guide" icon="ListChecks" title="この週のタスクはまだありません。" description="案件ごとに「今週やること」を 1 行ずつ入れます。先週のスプシの備考をそのまま貼る形で始められます。" steps={["案件の見出し行の「タスクを追加」を押す", "担当者を選んでタスクを 1 行入力（Enter で続けて入力）", "金曜にチェックを付けて完了"]} action={<div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center" }}><Button variant="primary" icon="Plus" onClick={() => { setTasks([]); setAdding(projects[0].name); }}>最初のタスクを追加</Button><Button icon="History" onClick={carryOver}>先週の未完了を持ち越す</Button></div>} /></div>
+    : tasks.length === 0 ? <div style={{ padding: 16 }}><EmptyState variant="guide" icon="ListChecks" title="この週のタスクはまだありません。" description="案件ごとに「今週やること」を 1 行ずつ入れます。先週のスプシの備考をそのまま貼る形で始められます。" steps={["案件の見出し行の「タスクを追加」を押す", "担当者を選んでタスクを 1 行入力（Enter で続けて入力）", "金曜にチェックを付けて完了"]} action={canEdit ? <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center" }}><Button variant="primary" icon="Plus" onClick={() => { setTasks([]); setAdding(projects[0].name); }}>最初のタスクを追加</Button><Button icon="History" onClick={carryOver}>先週の未完了を持ち越す</Button></div> : undefined} /></div>
     : shown.length === 0 ? <div style={{ padding: 16 }}><EmptyState compact icon="ListChecks" title="条件に合うタスクはありません" description="担当・状態の絞り込みを外すと全件に戻ります。" /></div>
     : shown.map((g) => [
       head(g),
@@ -133,9 +135,9 @@ export function WeeklyTasksScreen({ state = "normal", toast, narrow, mobile, onN
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: mobile ? 12 : 16 }}>
-      <PageHeader icon="ListChecks" title="今週のタスク一覧" description={mobile ? undefined : "全案件の今週やることを一枚で。チェックで完了、案件の行内で追加。数字は先週比較・案件タスクへ"}>
+      <PageHeader icon="ListChecks" title="今週のタスク一覧" description="全案件の今週やることを一枚で。チェックで完了、案件の行内で追加。数字は先週比較・案件タスクへ">
         {mobile ? null : <Button icon="FolderKanban" onClick={goBoard}>先週比較・案件タスク</Button>}
-        <Button variant="primary" icon="Plus" disabled={loading || error} onClick={() => setAdding((shown[0] || projects[0]).key || projects[0].name)}>タスクを追加</Button>
+        {canEdit ? <Button variant="primary" icon="Plus" disabled={loading || error} onClick={() => setAdding((shown[0] || projects[0]).key || projects[0].name)}>タスクを追加</Button> : null}
       </PageHeader>
 
       {/* 週セレクタ（左）＋ 案件別｜担当者別 ＋ 絞り込み（右）。1 段。スマホは 2 段 */}

@@ -119,7 +119,7 @@ const SCREENS = [
   { key: "weekly", label: "週次レポート", group: "weekly", nav: "weekly", pc: K.WeeklyReportScreen, pcStates: [...S4, ["view","閲覧モード"]], mobile: (p) => <K.WeeklyReportScreen {...p} mobile />, mobileStates: S2 },
   { key: "project", label: "案件別まとめ", group: "weekly", nav: "project", pc: K.ProjectScreen, pcStates: S4, mobile: K.ProjectMobileScreen, mobileStates: S2 },
   { key: "board-v2", label: "先週比較・案件タスク", group: "weekly", nav: "project", pc: K.BoardV2Screen, pcStates: S4 },
-  { key: "tasks-weekly", label: "今週のタスク一覧", group: "weekly", nav: "project", pc: K.WeeklyTasksScreen, pcStates: S4, mobile: (p) => <K.WeeklyTasksScreen {...p} mobile />, mobileStates: S4 },
+  { key: "tasks-weekly", label: "今週のタスク一覧", group: "weekly", nav: "project", pc: K.WeeklyTasksScreen, pcStates: [...S4, ["readonly","閲覧のみ"]], mobile: (p) => <K.WeeklyTasksScreen {...p} mobile />, mobileStates: [...S4, ["readonly","閲覧のみ"]] },
   { key: "evaluation", label: "目標（評価シート）", group: "weekly", nav: "goal", pc: K.EvaluationScreen, pcStates: S4, mobile: (p) => <K.EvaluationScreen {...p} mobile />, mobileStates: [S4[0]] },
   { key: "hit", label: "ヒット施策", group: "weekly", nav: "hit", pc: K.HitMeasuresScreen, pcStates: S4 },
   { key: "knowledge", label: "検証ナレッジ", group: "weekly", nav: "knowledge", pc: K.KnowledgeScreen, pcStates: S4 },
