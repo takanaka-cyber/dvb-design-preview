@@ -7,8 +7,9 @@ import React, { useState } from "react";
  * 行の展開: expandedKeys（rowKey の配列）に入っている行の直下に renderExpanded(row) を全列幅で描く。
  * 行の選択: onRowClick / selectedKey（履歴一覧など。選択行は --primary-subtle）。
  * 行内インライン編集（バッチ 4 型 A）: editingKey に一致する行は列の edit(row) で描く（なければ render）。行は左 2px --primary + 背景 --primary-subtle で強調。
+ * 合計行: footerRow（{ 列キー: 内容 }）。tfoot に --muted 背景・太字で下に固定。loading / error / 0 件では出さない。
  */
-export function DataTable({ columns = [], rows = [], rowKey = "id", sortKey, sortDir = "desc", onSort, density = "standard", stickyHeader = true, maxHeight, loading, skeletonRows = 5, error, emptyNode, onRetry, minWidth, caption, onRowClick, selectedKey, expandedKeys = [], renderExpanded, editingKey, style }) {
+export function DataTable({ columns = [], rows = [], rowKey = "id", sortKey, sortDir = "desc", onSort, density = "standard", stickyHeader = true, maxHeight, loading, skeletonRows = 5, error, emptyNode, onRetry, minWidth, caption, onRowClick, selectedKey, expandedKeys = [], renderExpanded, editingKey, footerRow, style }) {
   const [hoverRow, setHoverRow] = useState(null);
   const compact = density === "compact";
   const py = compact ? 8 : 12, px = compact ? 8 : 12;
@@ -87,6 +88,16 @@ export function DataTable({ columns = [], rows = [], rowKey = "id", sortKey, sor
             );
           })}
         </tbody>
+        {footerRow && !loading && !error && rows.length > 0 ? (
+          <tfoot><tr>{columns.map((c) => (
+            <td key={c.key} style={{
+              position: "sticky", bottom: 0, left: c.sticky ? 0 : undefined, zIndex: c.sticky ? 3 : 2,
+              padding: `${py}px ${px}px`, height: rowH, fontSize: 13, lineHeight: "18px", fontWeight: 600, verticalAlign: "middle",
+              textAlign: c.align === "right" ? "right" : "left", fontVariantNumeric: c.align === "right" ? "tabular-nums" : undefined, whiteSpace: "nowrap",
+              background: "var(--muted)", color: "var(--foreground)", borderTop: "1px solid var(--border)", boxShadow: c.sticky ? "1px 0 0 var(--border)" : undefined, width: c.width, minWidth: c.width,
+            }}>{footerRow[c.key] != null ? footerRow[c.key] : null}</td>
+          ))}</tr></tfoot>
+        ) : null}
       </table>
     </div>
   );

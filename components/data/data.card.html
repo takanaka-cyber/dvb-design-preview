@@ -39,6 +39,8 @@ const rows = [
   { id:2, name:"B社 通販", profit:834900, dp:-52100, roas:188.2, dr:-4.1, spend:2210000, ds:150000, cv:96, dc:-7 },
   { id:3, name:"C社 紐付けCP", profit:null, roas:null, spend:null, cv:null },
 ];
+const sum = (k) => rows.reduce((a, r) => a + (r[k] || 0), 0);
+function WithFooter(){ return <DataTable columns={cols} rows={rows} sortKey="profit" footerRow={{ name:"合計", profit:<MetricCell value={sum("profit")} unit="¥"/>, spend:<MetricCell value={sum("spend")} unit="¥"/>, cv:<MetricCell value={sum("cv")}/> }} minWidth={640} density="compact"/>; }
 function Sorted(){ const [s,setS]=React.useState({k:"profit",d:"desc"}); return <DataTable columns={cols} rows={rows} sortKey={s.k} sortDir={s.d} onSort={(k,d)=>setS({k,d})} minWidth={640}/>; }
 const App = () => (
   <div className="g">
@@ -51,6 +53,7 @@ const App = () => (
     <span className="k">MetricCell</span><div className="r" style={{gap:32,justifyContent:"flex-start"}}><MetricCell value={1204300} delta={120400} unit="¥"/><MetricCell value={311.7} delta={-4.1} unit="%" digits={1} deltaUnit="pt"/><MetricCell value={3120} delta={250} unit="¥" invert/><MetricCell value={412} delta={0}/><MetricCell value={null} empty="紐付けCP"/></div>
     <span className="k">DataTable sortable / sticky</span><div><Sorted/></div>
     <span className="k">DataTable 行内インライン編集（editingKey）</span><div><InlineEdit/></div>
+    <span className="k">DataTable 合計行（footerRow）</span><div><WithFooter/></div>
     <span className="k">loading / error / empty</span><div style={{display:"grid",gap:8}}>
       <DataTable columns={cols.slice(0,3)} rows={[]} loading/>
       <DataTable columns={cols.slice(0,3)} rows={[]} error="AXAD の集計に接続できません" onRetry={()=>{}}/>
