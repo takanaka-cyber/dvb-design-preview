@@ -1,4 +1,4 @@
-<!-- @dsCard group="Components" viewport="700x800" subtitle="KpiCard / MetricCell / DataTable / TaskRow / FreshnessBadge" name="Data" -->
+<!-- @dsCard group="Components" viewport="700x920" subtitle="KpiCard / MetricCell / DataTable / TaskRow / FreshnessBadge" name="Data" -->
 <!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">
 <link rel="stylesheet" href="../../styles.css">
 <script type="importmap">{"imports":{"react":"../../assets/react-shim.js"}}</script>
@@ -13,13 +13,20 @@
 <script type="text/babel" data-type="module" src="./DataTable.jsx"></script>
 <script type="text/babel" data-type="module" src="./TaskRow.jsx"></script>
 <script type="text/babel" data-type="module" src="../core/Button.jsx"></script>
+<script type="text/babel" data-type="module" src="../forms/Input.jsx"></script>
 <script type="text/babel" data-type="module" src="./FreshnessBadge.jsx"></script>
 <script type="text/babel" data-type="module" src="../layout/EmptyState.jsx"></script>
 <style>body{padding:16px;background:var(--card)}.g{display:grid;grid-template-columns:120px 1fr;gap:12px 16px;align-items:center}.k{font-size:12px;color:var(--muted-foreground)}.r{display:flex;gap:8px;align-items:center;flex-wrap:wrap}</style>
 </head><body><div id="root"></div>
 <script type="text/babel" data-type="module">
 import { ready } from "../../assets/dvb-ready.js";
-const { KpiCard, MetricCell, DataTable, TaskRow, EmptyState, FreshnessBadge, FreshnessNotice } = await ready(["KpiCard","MetricCell","DataTable","TaskRow","EmptyState","FreshnessBadge","FreshnessNotice","Button"]);
+const { KpiCard, MetricCell, DataTable, TaskRow, EmptyState, FreshnessBadge, FreshnessNotice, Button, Input } = await ready(["KpiCard","MetricCell","DataTable","TaskRow","EmptyState","FreshnessBadge","FreshnessNotice","Button","Input"]);
+const Ib = ({icon,label,tone}) => { const I = window.LucideReact[icon]; return <button type="button" aria-label={label} title={label} style={{width:32,height:32,display:"inline-grid",placeItems:"center",border:0,borderRadius:6,background:"transparent",color:tone==="destructive"?"var(--negative)":"var(--muted-foreground)",cursor:"pointer"}}><I size={16} strokeWidth={1.75}/></button>; };
+function InlineEdit(){ const [ed,setEd]=React.useState(2); const rs=[{id:1,name:"A社 記事LP",owner:"白井"},{id:2,name:"B社 通販",owner:"大倉"},{id:3,name:"C社 美容D2C",owner:"古木"}]; const cols=[
+  { key:"name", label:"案件名", edit:r=><Input size="sm" defaultValue={r.name} aria-label="案件名" autoFocus /> },
+  { key:"owner", label:"担当", width:120, edit:r=><Input size="sm" defaultValue={r.owner} aria-label="担当" /> },
+  { key:"ops", label:"", width:80, align:"right", render:r=><span style={{display:"inline-flex"}}><Ib icon="Pencil" label="編集"/><Ib icon="Trash2" label="削除" tone="destructive"/></span>, edit:r=><span style={{display:"inline-flex",gap:4}}><Button size="sm" variant="primary" icon="Check" aria-label="確定" style={{minWidth:32,padding:0,width:32}} onClick={()=>setEd(null)}/><Ib icon="X" label="キャンセル"/></span> },
+]; return <DataTable columns={cols} rows={rs} editingKey={ed} density="compact"/>; }
 const cols = [
   { key:"name", label:"案件名", sticky:true, width:160, render:r=><a href="#" style={{color:"var(--primary)",fontWeight:500}}>{r.name}</a> },
   { key:"profit", label:"今週粗利", align:"right", sortable:true, render:r=><MetricCell value={r.profit} delta={r.dp} unit="¥"/> },
@@ -43,6 +50,7 @@ const App = () => (
     </div>
     <span className="k">MetricCell</span><div className="r" style={{gap:32,justifyContent:"flex-start"}}><MetricCell value={1204300} delta={120400} unit="¥"/><MetricCell value={311.7} delta={-4.1} unit="%" digits={1} deltaUnit="pt"/><MetricCell value={3120} delta={250} unit="¥" invert/><MetricCell value={412} delta={0}/><MetricCell value={null} empty="紐付けCP"/></div>
     <span className="k">DataTable sortable / sticky</span><div><Sorted/></div>
+    <span className="k">DataTable 行内インライン編集（editingKey）</span><div><InlineEdit/></div>
     <span className="k">loading / error / empty</span><div style={{display:"grid",gap:8}}>
       <DataTable columns={cols.slice(0,3)} rows={[]} loading/>
       <DataTable columns={cols.slice(0,3)} rows={[]} error="AXAD の集計に接続できません" onRetry={()=>{}}/>

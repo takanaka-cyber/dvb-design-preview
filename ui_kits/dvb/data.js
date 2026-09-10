@@ -508,6 +508,85 @@ export const TRAINING_FEEDBACK = [
 /* ---------- ログイン・登録 ---------- */
 export const REGISTER_DEFAULT = { name: "", email: "", password: "", roomId: "", accountId: "", reportRoomId: "", reportAccountIds: [""] };
 
+/* ====================== バッチ 4（2026-09-10 追記）: 管理 13 画面 ====================== */
+/** ナビ → 画面（追記）。利用状況 /admin/access-logs はナビに載せない（導線は担当者判断） */
+Object.assign(NAV_TO_SCREEN, { "admin-users": "admin-users", "admin-projects": "admin-projects", "admin-project-summary": "admin-projects", "admin-assets": "admin-assignees", "admin-weekly": "admin-weekly", "admin-training": "admin-training", "admin-goals": "admin-goals", "admin-system": "admin-system" });
+
+/* ---------- 案件マスタ（型 A 見本） ---------- */
+export const ADMIN_PROJECTS = PROJECTS.map((name, i) => ({ id: `pj${i + 1}`, name, owner: GG_MEMBERS[i % GG_MEMBERS.length], createdAt: ["2026-04-01", "2026-04-01", "2026-05-12", "2026-06-03", "2026-07-21", "2026-08-18"][i], active: i < 5 }));
+
+/* ---------- ユーザー管理（GG 5 名 + 役職。承認待ち・研修中・却下は個人名なしのラベル） ---------- */
+export const USER_ROLES = ["ADMIN", "MANAGER", "LEADER", "MEMBER", "TRAINEE", "VIEWER"];
+export const DEPARTMENTS = ["GG 1課", "GG 2課"];
+export const ADMIN_USERS = {
+  pending: [
+    { id: "u-p1", name: "申請者A", email: "applicant-a@example.com", requestedAt: "9/9 10:42", roomId: "355512345" },
+    { id: "u-p2", name: "申請者B", email: "applicant-b@example.com", requestedAt: "9/8 17:05", roomId: "" },
+  ],
+  training: [{ id: "u-t1", name: "研修生A", email: "trainee-a@example.com", dept: "GG 1課", role: "TRAINEE", start: "9/1", day: 7 }],
+  approved: [
+    { id: "u1", name: "大倉", email: "okura@example.com", dept: "GG 1課", role: "LEADER", lastActive: "9/9 15:56" },
+    { id: "u2", name: "白井", email: "shirai@example.com", dept: "GG 1課", role: "MEMBER", lastActive: "9/9 15:40" },
+    { id: "u3", name: "古木", email: "furuki@example.com", dept: "GG 1課", role: "MEMBER", lastActive: "9/9 14:12" },
+    { id: "u7", name: "太一", email: "taichi@example.com", dept: "GG 1課", role: "MEMBER", lastActive: "9/9 13:30" },
+    { id: "u4", name: "岩崎", email: "iwasaki@example.com", dept: "GG 2課", role: "LEADER", lastActive: "9/9 11:03" },
+    { id: "u5", name: "三冨", email: "mitomi@example.com", dept: "GG 2課", role: "MEMBER", lastActive: "9/8 18:50" },
+    { id: "u8", name: "高橋", email: "takahashi@example.com", dept: "GG 2課", role: "MEMBER", lastActive: "9/8 17:10" },
+    { id: "u6", name: "管理者", email: "admin@example.com", dept: "—", role: "ADMIN", lastActive: "9/9 15:58" },
+  ],
+  rejected: [{ id: "u-r1", name: "申請者C", email: "applicant-c@example.com", rejectedAt: "8/28", reason: "社外ドメイン" }],
+};
+/** 組織: 部 → 課（ml-6 入れ子）。リーダーは課ごと */
+export const ORGANIZATION = [
+  { id: "d1", name: "GG（ジェネラルグロース）", sections: [{ id: "s1", name: "GG 1課", members: 4, leader: "大倉" }, { id: "s2", name: "GG 2課", members: 3, leader: "岩崎" }] },
+  { id: "d2", name: "管理部", sections: [{ id: "s3", name: "管理課", members: 1, leader: "" }] },
+];
+
+/* ---------- アセクリ・ルーム管理（2 カラム） ---------- */
+export const CHATWORK_ROOMS = [
+  { id: "r1", name: "GG 1課 タスク報告", roomId: "312345678", use: "タスク報告" },
+  { id: "r2", name: "GG 2課 タスク報告", roomId: "398765432", use: "タスク報告" },
+  { id: "r3", name: "アセクリ 発注（制作A社）", roomId: "355512345", use: "発注" },
+  { id: "r4", name: "アセクリ 発注（制作B社）", roomId: "355598765", use: "発注" },
+  { id: "r5", name: "日報 通知", roomId: "301122334", use: "日報" },
+];
+export const TIER_SUMMARY = [{ tier: "Tier 1", count: 2 }, { tier: "Tier 2", count: 2 }, { tier: "Tier 3", count: 0 }];
+// ADMIN_ASSIGNEES は ASSIGNEE_LIST（バッチ 3）の後で定義（ファイル末尾）
+
+/* ---------- 週次まとめ管理（型 D 見本） ---------- */
+export const WEEKLY_ADMIN_KPI = { written: 4, members: 5, comments: 12, aiDone: 3, sharedCpn: SHARED_CPN.length };
+export const WEEKLY_ADMIN_MEMBERS = GG_MEMBERS.map((name, i) => ({
+  id: `wm${i + 1}`, name, dept: SECTIONS.find((s) => s.members.includes(name)).name, status: i === 4 ? "missing" : "sent", updatedAt: i === 4 ? "" : `9/${8 + (i % 2)} ${["18:42", "09:15", "19:30", "17:05"][i % 4]}`,
+  profit: [1204300, 964200, 834900, 402100, 0][i], dp: [120400, 88600, -52100, -98400, 0][i],
+  factors: i === 4 ? [] : [
+    { tone: "positive", text: ["型C 差し替えで CPA 18% 改善", "TikTok 新規 CPN が初日から利益", "比較記事の導入文改稿で CVR 2.6%", "検索 KW 除外を再開"][i] },
+    { tone: "negative", text: ["E社 年代別 CR の 3 本目が未入稿", "リタゲの静止画 4 枚が納品待ち", "消化増に CV が追随せず", "Google CPA が ¥4,000 台に上昇"][i] },
+  ],
+}));
+
+/* ---------- 目標設定（B + D） ---------- */
+export const EVAL_ADMIN_QUARTER_GOALS = { Q2: { company: EVAL_COMPANY_GOALS.company, dept: EVAL_COMPANY_GOALS.dept, deadline: "2026-09-30" }, Q3: { company: "", dept: "", deadline: "" } };
+export const EVAL_ADMIN_MEMBERS = GG_MEMBERS.map((name, i) => ({ id: `em${i + 1}`, name, dept: SECTIONS.find((s) => s.members.includes(name)).name, grade: ["G2", "G2", "G3", "G3", "G1"][i], status: ["self", "first", "self", "fixed", "draft"][i], updatedAt: ["9/8 10:12", "9/7 16:40", "9/9 09:30", "9/1 11:00", "—"][i] }));
+export const EVALUATOR_OPTIONS = ["部長", "事業部長", "GG 1課 リーダー", "GG 2課 リーダー"];
+export const EVAL_ADMIN_ASSIGNMENTS = GG_MEMBERS.map((name, i) => ({ id: `ea${i + 1}`, name, first: i < 3 ? "GG 1課 リーダー" : "GG 2課 リーダー", final: "部長" }));
+
+/* ---------- システム設定（Card 8 枚） ---------- */
+export const SYS_CANDIDATES = [{ id: "c1", name: "TM2-3_三冨_F社_紐付け検証", media: "FB", detectedAt: "9/9 06:00" }, { id: "c2", name: "TM2-1_白井_E社_年代別_45-54", media: "FB", detectedAt: "9/9 06:00" }];
+export const SYS_REQUESTS = [{ id: "q1", from: "古木", target: "TikTok BC 「C社 美容 新規」", at: "9/8 14:20" }];
+export const META_BMS = [{ id: "bm1", name: "GG メイン BM", bmId: "1023456789012", accounts: 6 }, { id: "bm2", name: "GG 検証 BM", bmId: "1098765432109", accounts: 2 }];
+export const META_FETCH_JOBS = [{ id: "mf1", account: "A社 記事LP（act_1234）", range: "2026-08-01 〜 2026-08-31", status: "done", progress: [31, 31] }, { id: "mf2", account: "C社 美容D2C（act_5678）", range: "2026-09-01 〜 2026-09-08", status: "running", progress: [5, 8] }];
+export const TIKTOK_BCS = [{ id: "bc1", name: "GG TikTok BC", bcId: "7012345678901234567", accounts: 3 }];
+export const TIKTOK_FETCH_JOBS = [{ id: "tf1", account: "C社 美容 新規（adv_9012）", range: "2026-08-15 〜 2026-08-31", status: "error", progress: [9, 17] }];
+export const SYS_CHATWORK = { token: "••••••••••••3f9a", notifyRoom: "301122334", mentionAdmin: true, dailyReminder: "17:30" };
+
+/* ---------- 研修管理（研修生 Select + 閲覧モード SubNav） ---------- */
+export const TRAINEES = [{ id: "tr1", label: "研修生A", start: "9/1（月）", day: 7, dept: "GG 1課" }, { id: "tr2", label: "研修生B", start: "9/8（月）", day: 2, dept: "GG 2課" }];
+
+/* ---------- 利用状況（型 D。ナビには載せない） ---------- */
+export const ACCESS_DAU = Array.from({ length: 14 }, (_, i) => { const d = 27 + i; const day = d > 31 ? d - 31 : d; const m = d > 31 ? 9 : 8; const dow = ["日", "月", "火", "水", "木", "金", "土"][(d + 4) % 7]; const weekend = dow === "土" || dow === "日"; return { key: `${m}/${day}`, label: `${m}/${day}`, dow, weekend, value: weekend ? [1, 0, 2, 1][i % 4] : [6, 7, 7, 5, 8, 7, 6, 8, 7, 8][i % 10] }; });
+export const ACCESS_USERS = [...ADMIN_USERS.approved, { id: "u-t1", name: "研修生A", role: "TRAINEE" }].map((u, i) => ({ id: u.id, name: u.name, role: u.role, lastAccess: ["9/9 15:56", "9/9 15:40", "9/9 14:12", "9/9 11:03", "9/8 18:50", "9/9 15:58", "9/9 13:20"][i], d7: [5, 5, 5, 4, 3, 5, 5][i], d30: [21, 20, 22, 18, 12, 22, 7][i] }));
+export const ACCESS_PAGES = [["/dashboard", 412], ["/mbo", 388], ["/tasks", 351], ["/reports/weekly", 204], ["/reports/projects", 166], ["/onboarding", 98], ["/commitment", 74], ["/links", 61], ["/hit-measures", 40], ["/analytics", 22]].map(([path, count], i) => ({ id: `pg${i + 1}`, rank: i + 1, path, count }));
+
 /* ---------- アセクリ（外部。個人名なし） ---------- */
 export const ASSIGNEE_LIST = [
   { id: "as1", name: "制作A社", tier: "Tier 1", undelivered: 3, delivered: 12, status: "undelivered" },
@@ -529,3 +608,5 @@ export const ASSIGNEE_DELIVERED = [
   ] },
   { group: "8/25（月）〜 8/31（日）", items: [{ id: "d4", project: "B社 通販", type: "バナー", title: "秋物", detail: "季節バナー 3 枚", deliveredAt: "8/28 11:30", crUrl: "https://drive.google.com/file/d/…", pmUrl: "" }] },
 ];
+/** バッチ 4: アセクリ・ルーム管理の右カラム（ASSIGNEE_LIST + ルーム紐付け・トークン） */
+export const ADMIN_ASSIGNEES = ASSIGNEE_LIST.map((a, i) => ({ ...a, room: ["r3", "r4", "", ""][i], token: i < 3, active: true }));

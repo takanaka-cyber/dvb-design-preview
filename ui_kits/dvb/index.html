@@ -1,4 +1,4 @@
-<!-- @dsCard group="DVB" viewport="1440x900" subtitle="35 画面 × 状態 × 幅 1440 / 1280 / 393 / 430（毎日 / 週次・ツール / 研修・外部 / 管理）" name="DVB リファレンス画面" -->
+<!-- @dsCard group="DVB" viewport="1440x900" subtitle="45 画面 × 状態 × 幅 1440 / 1280 / 393 / 430（毎日 / 週次・ツール / 研修・外部 / 管理）" name="DVB リファレンス画面" -->
 <!-- @startingPoint section="DVB" subtitle="サイドバー + ページの業務画面シェル（PC 10 画面 + ラフ 3 枚、スマホ 4 画面）" viewport="1440x900" -->
 <!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><title>DVB リファレンス画面</title>
 <link rel="stylesheet" href="../../styles.css">
@@ -72,6 +72,9 @@
 <script type="text/babel" data-type="module" src="./TrainingScreens2.jsx"></script>
 <script type="text/babel" data-type="module" src="./AuthScreens.jsx"></script>
 <script type="text/babel" data-type="module" src="./AssigneeScreens.jsx"></script>
+<!-- バッチ 4 画面（管理。新規部品なし。Badge kind / DataTable editingKey / PageHeader backLink は既存部品に追加） -->
+<script type="text/babel" data-type="module" src="./AdminScreens.jsx"></script>
+<script type="text/babel" data-type="module" src="./AdminScreens2.jsx"></script>
 <style>
   html,body{height:100%} body{background:oklch(0.87 0.01 250);overflow:auto}
   .bar{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:8px 16px;flex-wrap:wrap;padding:8px 16px;background:var(--foreground);color:#fff;font-size:12px}
@@ -86,7 +89,7 @@
 import { ready } from "../../assets/dvb-ready.js";
 import { NAV_GROUPS, NAV_TO_SCREEN } from "./data.js";
 const D = await ready(["Sidebar","Toast","Button","DataTable","TaskRow","KpiCard","PageHeader","FilterBar","Select","Field","Textarea","SaveStatus","EmptyState","SectionHeading","Badge","ConfirmDialog","MetricCell","Input","WeekSelector","FreshnessBadge","FreshnessNotice","DraftRestoreBanner","Progress","SegmentedControl","Dialog","Switch","Checkbox","Tabs","ChatPanel","LinkTile","SubNav","AuthCard"]);
-const KIT = ["BoardScreen","ProjectScreen","MboScreen","WeeklyReportScreen","MboMobileScreen","MboHistoryScreen","MboMonthlyScreen","ProjectMobileScreen","GoalScreen","CommitScreen","DashboardScreen","TasksScreen","SectionDetailScreen","DashboardScreenV2","CommitScreenV2","EvaluationScreen","HitMeasuresScreen","KnowledgeScreen","BoardV2Screen","AnalyticsScreen","ShootingScheduleScreen","LinksScreen","ManualScreen","SettingsScreen","TrainingHomeScreen","TrainingScheduleScreen","TrainingLearningScreen","TrainingChecklistScreen","TrainingQuizScreen","TrainingValuesScreen","TrainingCrOutputScreen","TrainingGlossaryScreen","TrainingQaScreen","LoginScreen","RegisterScreen","AssigneeListScreen","AssigneeDetailScreen"];
+const KIT = ["BoardScreen","ProjectScreen","MboScreen","WeeklyReportScreen","MboMobileScreen","MboHistoryScreen","MboMonthlyScreen","ProjectMobileScreen","GoalScreen","CommitScreen","DashboardScreen","TasksScreen","SectionDetailScreen","DashboardScreenV2","CommitScreenV2","EvaluationScreen","HitMeasuresScreen","KnowledgeScreen","BoardV2Screen","AnalyticsScreen","ShootingScheduleScreen","LinksScreen","ManualScreen","SettingsScreen","TrainingHomeScreen","TrainingScheduleScreen","TrainingLearningScreen","TrainingChecklistScreen","TrainingQuizScreen","TrainingValuesScreen","TrainingCrOutputScreen","TrainingGlossaryScreen","TrainingQaScreen","LoginScreen","RegisterScreen","AssigneeListScreen","AssigneeDetailScreen","AdminProjectsScreen","AdminTypeBScreen","AdminTypeCScreen","AdminWeeklyScreen","AccessLogsScreen","AdminUsersScreen","AdminAssigneesScreen","AdminGoalsScreen","AdminSystemScreen","AdminOnboardingScreen"];
 await new Promise((r) => { const t = () => (window.DVBKit && KIT.every((k) => window.DVBKit[k])) ? r() : setTimeout(t, 16); t(); });
 const { Sidebar, Toast } = D;
 const K = window.DVBKit;
@@ -137,7 +140,17 @@ const SCREENS = [
   { key: "register", label: "登録申請", group: "training", nav: "dashboard", bare: true, pc: K.RegisterScreen, pcStates: [S4[0], ["success","申請完了"], S4[3]], mobile: K.RegisterScreen, mobileStates: [S4[0], ["success","申請完了"], S4[3]] },
   { key: "assignee", label: "アセクリ 一覧", group: "training", nav: "dashboard", bare: true, pc: K.AssigneeListScreen, pcStates: [S4[0], S4[1], ["denied","アクセス拒否"]] },
   { key: "assignee-detail", label: "アセクリ 詳細", group: "training", nav: "dashboard", bare: true, pc: K.AssigneeDetailScreen, pcStates: S4, mobile: K.AssigneeDetailScreen, mobileStates: S4 },
-  // 管理 はバッチ 4
+  // 管理（バッチ 4。型 A〜D の見本 4 枚 + 差分の大きい 6 画面。CP判断設定・リーダー管理・組織管理・共有CP の単独画面は描かない）
+  { key: "admin-projects", label: "型A 案件マスタ", group: "admin", nav: "admin-projects", pc: K.AdminProjectsScreen, pcStates: [S4[0], S4[1], ["editing","編集中"], ["confirm","削除確認"]] },
+  { key: "admin-type-b", label: "型B 設定フォーム", group: "admin", nav: "admin-system", pc: K.AdminTypeBScreen, pcStates: [S4[0], ["saving","保存中"], S4[3]] },
+  { key: "admin-type-c", label: "型C Dialog＋表", group: "admin", nav: "admin-system", pc: K.AdminTypeCScreen, pcStates: [S4[0], S4[1], ["dialog","Dialog 開"]] },
+  { key: "admin-weekly", label: "型D 週次まとめ管理", group: "admin", nav: "admin-weekly", pc: K.AdminWeeklyScreen, pcStates: S4 },
+  { key: "admin-users", label: "ユーザー管理", group: "admin", nav: "admin-users", pc: K.AdminUsersScreen, pcStates: [S4[0], S4[1], ["dialog","ユーザー追加"]] },
+  { key: "admin-assignees", label: "アセクリ・ルーム管理", group: "admin", nav: "admin-assets", pc: K.AdminAssigneesScreen, pcStates: S2 },
+  { key: "admin-goals", label: "目標設定", group: "admin", nav: "admin-goals", pc: K.AdminGoalsScreen, pcStates: S2 },
+  { key: "admin-system", label: "システム設定", group: "admin", nav: "admin-system", pc: K.AdminSystemScreen, pcStates: [S4[0]] },
+  { key: "admin-training", label: "研修管理", group: "admin", nav: "admin-training", pc: K.AdminOnboardingScreen, pcStates: S2 },
+  { key: "admin-access-logs", label: "利用状況", group: "admin", nav: "admin-system", pc: K.AccessLogsScreen, pcStates: S4 },
 ];
 const WIDTHS = [1440, 1280, 393, 430];
 const parse = () => Object.fromEntries(new URLSearchParams(location.hash.slice(1)));

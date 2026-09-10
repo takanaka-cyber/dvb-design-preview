@@ -1,4 +1,4 @@
-<!-- @dsCard group="Components" viewport="700x600" subtitle="Badge / ConfirmDialog / Toast / DraftRestoreBanner" name="Feedback" -->
+<!-- @dsCard group="Components" viewport="700x680" subtitle="Badge / ConfirmDialog / Toast / DraftRestoreBanner" name="Feedback" -->
 <!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">
 <link rel="stylesheet" href="../../styles.css">
 <script type="importmap">{"imports":{"react":"../../assets/react-shim.js"}}</script>
@@ -23,6 +23,8 @@ const App = () => (
     <span className="k">rank</span><div className="r">{["S","A","B","C","停止",null].map((v,i)=><Badge key={i} kind="rank" value={v}/>)}</div>
     <span className="k">media</span><div className="r">{["FB","TikTok","Google","その他"].map(v=><Badge key={v} kind="media" value={v}/>)}</div>
     <span className="k">status</span><div className="r"><Badge value="todo"/><Badge value="done"/><Badge value="late" label="1件遅れ"/><Badge value="info" label="対象週の数値なし"/><Badge value="neutral" label="未設定"/></div>
+    <span className="k">status（管理）</span><div className="r">{["pending","training","approved","rejected","sent","missing","off","undelivered","delivered","none"].map(v=><Badge key={v} kind="status" value={v}/>)}</div>
+    <span className="k">tier / role</span><div className="r"><Badge kind="tier" value="Tier 1"/><Badge kind="tier" value="Tier 2"/><Badge kind="tier" value="Tier 3"/><Badge kind="tier" value={null}/><span style={{width:8}}/>{["ADMIN","MANAGER","LEADER","MEMBER","TRAINEE","VIEWER"].map(v=><Badge key={v} kind="role" value={v}/>)}</div>
     <span className="k">assignee / count</span><div className="r"><Badge kind="assignee" value="白井"/><Badge kind="assignee" value="髙仲 秀介"/><Badge kind="count" value={12}/><Badge kind="count" value="4/4件"/></div>
     <span className="k">ConfirmDialog</span><div><ConfirmDialog inline title="タスクを削除しますか？" description="「A社 記事LP の CR 差し替え」が削除されます。この操作は取り消せません。" /></div>
     <span className="k">DraftRestoreBanner</span><div><DraftRestoreBanner time="9/8 22:14" onRestore={()=>{}} onDiscard={()=>{}} /></div>

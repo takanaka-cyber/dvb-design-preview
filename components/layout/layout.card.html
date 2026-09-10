@@ -1,4 +1,4 @@
-<!-- @dsCard group="Components" viewport="700x860" subtitle="PageHeader / FilterBar / WeekSelector / SectionHeading / EmptyState / Sidebar" name="Layout" -->
+<!-- @dsCard group="Components" viewport="700x940" subtitle="PageHeader / FilterBar / WeekSelector / SectionHeading / EmptyState / Sidebar" name="Layout" -->
 <!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">
 <link rel="stylesheet" href="../../styles.css">
 <script type="importmap">{"imports":{"react":"../../assets/react-shim.js"}}</script>
@@ -33,6 +33,7 @@ function Chips(){ const [s,setS]=React.useState(["白井"]); const names=["白�
 const App = () => (
   <div className="g">
     <span className="k">PageHeader</span><div><PageHeader icon="FolderKanban" title="案件別まとめ" description="担当案件の実績・検証CP・週次施策をまとめて確認"><Button icon="ExternalLink">シートを開く</Button><Button variant="primary" icon="Plus">タスクを追加</Button></PageHeader></div>
+    <span className="k">PageHeader backLink</span><div><PageHeader backLink={{label:"タスク管理に戻る",onClick:()=>{}}} title="課のタスク詳細一覧" description="9/8（月）〜 9/14（日）"/></div>
     <span className="k">FilterBar</span><div><Chips/></div>
     <span className="k">WeekSelector</span><div><Weeks/></div>
     <span className="k">SectionHeading</span><div style={{display:"grid",gap:12}}><SectionHeading icon="FlaskConical" title="検証CP結果" count={3} description="白井 × 1CP"><Button size="sm" variant="ghost" icon="ArrowUpDown">並べ替え</Button></SectionHeading><SectionHeading level={3} icon="ListChecks" title="今週のタスク" count={0}/></div>
